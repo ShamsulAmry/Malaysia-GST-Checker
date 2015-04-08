@@ -139,8 +139,8 @@ namespace Amry.Gst
                 throw new GstException(errorField.Message);
             }
 
-            var resultField = jsonResult.Updates.FieldUpdates.Last();
-            if (resultField.IsTable == null) {
+            var resultField = jsonResult.Updates.FieldUpdates.LastOrDefault();
+            if (resultField == null || resultField.IsTable == null) {
                 return new GstLookupResult[0];
             }
 
