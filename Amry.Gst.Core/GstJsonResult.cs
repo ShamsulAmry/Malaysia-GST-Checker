@@ -2,37 +2,37 @@ namespace Amry.Gst
 {
     public class GstJsonResult
     {
-        public GstWebUpdates Updates { get; set; }
+        public GstWebUpdates Updates;
     }
 
     public class GstWebUpdates
     {
-        public GstWebFieldUpdate[] FieldUpdates { get; set; }
-        public GstWebViewUpdate[] ViewUpdates { get; set; }
+        public GstWebFieldUpdate[] FieldUpdates;
+        public GstWebViewUpdate[] ViewUpdates;
     }
 
     public class GstWebFieldUpdate
     {
-        public string Container { get; set; }
-        public bool? Enabled { get; set; }
-        public string Field { get; set; }
-        public string FieldClass { get; set; }
-        public string IndicatorClass { get; set; }
-        public bool? InError { get; set; }
-        public bool? IsTable { get; set; }
-        public string Message { get; set; }
-        public string MessageClass { get; set; }
-        public int? TabIndex { get; set; }
-        public string Tooltip { get; set; }
-        public string Value { get; set; }
-        public bool? Visible { get; set; }
-        public string Watermark { get; set; }
+        public string Container;
+        public bool? Enabled;
+        public string Field;
+        public string FieldClass;
+        public string IndicatorClass;
+        public bool? InError;
+        public bool? IsTable;
+        public string Message;
+        public string MessageClass;
+        public int? TabIndex;
+        public string Tooltip;
+        public string Value;
+        public bool? Visible;
+        public string Watermark;
     }
 
     public class GstWebViewUpdate
     {
-        public bool? InError { get; set; }
-        public string View { get; set; }
+        public bool? InError;
+        public string View;
     }
 
 }

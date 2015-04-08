@@ -2,19 +2,20 @@
 
 namespace Amry.Gst
 {
+    [Serializable]
     public class GstLookupResult
     {
+        public readonly string BusinessName;
+        public readonly string CommenceDate;
+        public readonly string GstNumber;
+        public readonly string Status;
+
         public GstLookupResult(string gstNumber, string businessName, DateTime commenceDate, string status)
         {
             GstNumber = gstNumber;
             BusinessName = businessName;
-            CommenceDate = commenceDate;
+            CommenceDate = commenceDate.ToString("yyyy-MM-dd");
             Status = status;
         }
-
-        public string GstNumber { get; private set; }
-        public string BusinessName { get; private set; }
-        public DateTime CommenceDate { get; private set; }
-        public string Status { get; private set; }
     }
 }
