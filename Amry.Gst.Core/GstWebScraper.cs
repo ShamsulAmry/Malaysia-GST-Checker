@@ -4,7 +4,9 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Net;
+using System.Threading;
 using System.Threading.Tasks;
+using Amry.Gst.Properties;
 using HtmlAgilityPack;
 using Newtonsoft.Json;
 using RestSharp;
@@ -17,12 +19,22 @@ namespace Amry.Gst
             CookieContainer = new CookieContainer()
         };
 
+        int _accessCount;
         GstLookupInputType? _inputType;
         bool _isInitialized;
         string _token;
 
         public async Task<IList<GstLookupResult>> LookupGstData(GstLookupInputType inputType, string input)
         {
+            if (_accessCount > 0) {
+                throw new NotSupportedException(Resources.SingleLookupErrorMessage);
+            }
+
+            if (Interlocked.Increment(ref _accessCount) > 1) {
+                Interlocked.Decrement(ref _accessCount);
+                throw new NotSupportedException(Resources.SingleLookupErrorMessage);
+            }
+
             if (!_isInitialized) {
                 await InitializeToken();
                 await LoadFrontPage();
@@ -34,7 +46,9 @@ namespace Amry.Gst
                 await SelectLookupInputType(inputType);
             }
 
-            return await ExecuteLookup(input);
+            var result = await ExecuteLookup(input);
+            Interlocked.Decrement(ref _accessCount);
+            return result;
         }
 
         async Task InitializeToken()
