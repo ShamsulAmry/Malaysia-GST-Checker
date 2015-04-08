@@ -6,11 +6,16 @@ namespace Amry.Gst.Web.Controllers
 {
     public class BizNameController : ApiController
     {
-        readonly IGstDataSource _gst = new GstWebScraper();
+        readonly IGstDataSource _gstDataSource;
+
+        public BizNameController(IGstDataSource gstDataSource)
+        {
+            _gstDataSource = gstDataSource;
+        }
 
         public Task<IList<GstLookupResult>> Get(string id)
         {
-            return _gst.LookupGstData(GstLookupInputType.BusinessName, id.Replace('_', ' '));
+            return _gstDataSource.LookupGstData(GstLookupInputType.BusinessName, id.Replace('_', ' '));
         }
     }
 }
