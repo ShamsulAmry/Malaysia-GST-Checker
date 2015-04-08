@@ -1,4 +1,4 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Web.Http;
 
@@ -13,10 +13,9 @@ namespace Amry.Gst.Web.Controllers
             _gstDataSource = gstDataSource;
         }
 
-        public async Task<GstLookupResult> Get(string id)
+        public Task<IList<GstLookupResult>> Get(string id)
         {
-            var result = await _gstDataSource.LookupGstData(GstLookupInputType.GstNumber, id);
-            return result.FirstOrDefault();
+            return _gstDataSource.LookupGstData(GstLookupInputType.GstNumber, id);
         }
     }
 }
