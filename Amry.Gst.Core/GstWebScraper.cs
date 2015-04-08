@@ -30,25 +30,27 @@ namespace Amry.Gst
                 throw new NotSupportedException(Resources.SingleLookupErrorMessage);
             }
 
-            if (Interlocked.Increment(ref _accessCount) > 1) {
+            try {
+                if (Interlocked.Increment(ref _accessCount) > 1) {
+                    throw new NotSupportedException(Resources.SingleLookupErrorMessage);
+                }
+
+                if (!_isInitialized) {
+                    await InitializeToken();
+                    await LoadFrontPage();
+                    await BrowseToLookupPage();
+                    _isInitialized = true;
+                }
+
+                if (_inputType == null || _inputType != inputType) {
+                    await SelectLookupInputType(inputType);
+                }
+
+                var result = await ExecuteLookup(input);
+                return result;
+            } finally {
                 Interlocked.Decrement(ref _accessCount);
-                throw new NotSupportedException(Resources.SingleLookupErrorMessage);
             }
-
-            if (!_isInitialized) {
-                await InitializeToken();
-                await LoadFrontPage();
-                await BrowseToLookupPage();
-                _isInitialized = true;
-            }
-
-            if (_inputType == null || _inputType != inputType) {
-                await SelectLookupInputType(inputType);
-            }
-
-            var result = await ExecuteLookup(input);
-            Interlocked.Decrement(ref _accessCount);
-            return result;
         }
 
         async Task InitializeToken()
