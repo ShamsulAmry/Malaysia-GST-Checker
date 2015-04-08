@@ -137,7 +137,12 @@ namespace Amry.Gst
                 throw new GstException(errorField.Message);
             }
 
-            var htmlStr = jsonResult.Updates.FieldUpdates.Last().Value;
+            var resultField = jsonResult.Updates.FieldUpdates.Last();
+            if (resultField.IsTable == null) {
+                return new GstLookupResult[0];
+            }
+
+            var htmlStr = resultField.Value;
             var htmlDoc = new HtmlDocument();
             htmlDoc.LoadHtml(htmlStr);
             var cellTexts = htmlDoc.DocumentNode
