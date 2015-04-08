@@ -132,6 +132,11 @@ namespace Amry.Gst
             }
             var jsonResult = JsonConvert.DeserializeObject<GstJsonResult>(respContent);
 
+            var errorField = jsonResult.Updates.FieldUpdates.FirstOrDefault(x => x.IndicatorClass == "FieldError");
+            if (errorField != null) {
+                throw new GstException(errorField.Message);
+            }
+
             var htmlStr = jsonResult.Updates.FieldUpdates.Last().Value;
             var htmlDoc = new HtmlDocument();
             htmlDoc.LoadHtml(htmlStr);
