@@ -1,0 +1,91 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+    <title>Malaysia GST Checker</title>
+
+    <!-- Bootstrap -->
+    <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+      <script src="//oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+      <script src="//oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+</head>
+<body>
+    <nav class="navbar navbar-inverse">
+        <div class="container">
+            <div class="navbar-header">
+                <div class="navbar-brand">Malaysia GST Checker</div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container">
+        <form style="margin-bottom: 30px">
+            <div class="row">
+                <div class="form-group col-md-offset-3 col-md-3 col-sm-offset-2 col-sm-4 col-xs-offset-2 col-xs-8">
+                    <label>Search Type</label>
+                    <div class="radio">
+                        <label><input type="radio" name="search-type" value="GstNo" checked="checked" />GST Number</label>
+                    </div>
+                    <div class="radio">
+                        <label><input type="radio" name="search-type" value="BizRegNo" />Business Registration Number</label>
+                    </div>
+                    <div class="radio">
+                        <label><input type="radio" name="search-type" value="BizName" />Business Name</label>
+                    </div>
+                </div>
+                <div class="col-md-offset-0 col-md-3 col-sm-offset-0 col-sm-4 col-xs-offset-2 col-xs-8">
+                    <div class="form-group">
+                        <label for="search-input">Search For</label>
+                        <input type="text" id="search-input" class="form-control" />
+                    </div>
+                    <button type="submit" class="btn btn-primary">Lookup GST Status</button>
+                </div>
+            </div>
+        </form>
+        
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>GST Number</th>
+                    <th style="vertical-align: top">Business Name</th>
+                    <th>Commence Date</th>
+                    <th>GST Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>123</td>
+                    <td>eQuad Technologies</td>
+                    <td>2015-04-01</td>
+                    <td>ACTIVE</td>
+                </tr>
+                <tr>
+                    <td>123</td>
+                    <td>eQuad Technologies</td>
+                    <td>2015-04-01</td>
+                    <td>ACTIVE</td>
+                </tr>
+                <tr>
+                    <td>123</td>
+                    <td>eQuad Technologies</td>
+                    <td>2015-04-01</td>
+                    <td>ACTIVE</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+    <!-- Include all compiled plugins (below), or include individual files as needed -->
+    <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
+</body>
+</html>
