@@ -37,7 +37,7 @@
                 <div class="form-group col-md-offset-3 col-md-3 col-sm-offset-2 col-sm-4 col-xs-offset-2 col-xs-8">
                     <label>Search Type</label>
                     <div class="radio">
-                        <label><input type="radio" name="search-type" value="GstNo" ng-model="searchType" />GST Number</label>
+                        <label><input type="radio" name="search-type" value="GstNo" ng-model="searchType" checked="checked" />GST Number</label>
                     </div>
                     <div class="radio">
                         <label><input type="radio" name="search-type" value="BizRegNo" ng-model="searchType" />Business Registration Number</label>
@@ -67,10 +67,10 @@
             </thead>
             <tbody>
                 <tr ng-repeat="result in results | orderBy:'BusinessName'">
-                    <td>{{result.GstNumber}}</td>
+                    <td ng-bind="result.GstNumber"></td>
                     <td ng-bind-html="result.BusinessName"></td>
-                    <td>{{result.CommenceDate}}</td>
-                    <td>{{result.Status}}</td>
+                    <td ng-bind="result.CommenceDate"></td>
+                    <td ng-bind="result.Status"></td>
                 </tr>
             </tbody>
         </table>
