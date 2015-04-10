@@ -68,10 +68,10 @@
             </thead>
             <tbody>
                 <tr ng-repeat="result in results | orderBy:'BusinessName'">
-                    <td ng-bind="result.GstNumber"></td>
-                    <td ng-bind-html="result.BusinessName"></td>
-                    <td ng-bind="result.CommenceDate"></td>
-                    <td ng-bind="result.Status"></td>
+                    <td data-label="GST Number" ng-bind="result.GstNumber"></td>
+                    <td data-label="Business Name" ng-bind-html="result.BusinessName"></td>
+                    <td data-label="Commence Date" ng-bind="result.CommenceDate"></td>
+                    <td data-label="GST Status" ng-bind="result.Status"></td>
                 </tr>
                 <tr class="no-result">
                     <td colspan="4">No result to show here.</td>
