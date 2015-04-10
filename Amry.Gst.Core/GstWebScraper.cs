@@ -24,7 +24,7 @@ namespace Amry.Gst
         bool _isInitialized;
         string _token;
 
-        public async Task<IList<GstLookupResult>> LookupGstData(GstLookupInputType inputType, string input)
+        public async Task<IList<IGstLookupResult>> LookupGstData(GstLookupInputType inputType, string input)
         {
             if (_accessCount > 0) {
                 throw new NotSupportedException(Resources.SingleLookupErrorMessage);
@@ -104,7 +104,7 @@ namespace Amry.Gst
             _inputType = inputType;
         }
 
-        async Task<IList<GstLookupResult>> ExecuteLookup(string input)
+        async Task<IList<IGstLookupResult>> ExecuteLookup(string input)
         {
             var req = new RestRequest("_/Recalc");
 

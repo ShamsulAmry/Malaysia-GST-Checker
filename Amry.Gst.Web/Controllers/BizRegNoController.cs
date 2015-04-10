@@ -13,7 +13,7 @@ namespace Amry.Gst.Web.Controllers
             _gstDataSource = gstDataSource;
         }
 
-        public Task<IList<GstLookupResult>> Get(string id)
+        public Task<IList<IGstLookupResult>> Get(string id)
         {
             return _gstDataSource.LookupGstData(GstLookupInputType.BusinessRegNumber, id);
         }
