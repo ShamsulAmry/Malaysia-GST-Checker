@@ -8,7 +8,8 @@
     <title>Malaysia GST Checker</title>
 
     <!-- Bootstrap -->
-    <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css" rel="stylesheet">
+    <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="~/Contents/app.min.css" rel="stylesheet" />
 
     <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
     <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
@@ -71,6 +72,9 @@
                     <td ng-bind-html="result.BusinessName"></td>
                     <td ng-bind="result.CommenceDate"></td>
                     <td ng-bind="result.Status"></td>
+                </tr>
+                <tr class="no-result">
+                    <td colspan="4">No result to show here.</td>
                 </tr>
             </tbody>
         </table>

@@ -1,0 +1,7 @@
+﻿tr + tr.no-result {
+  display: none;
+}
+tr.no-result > td {
+  text-align: center;
+}
+/*# sourceMappingURL=app.css.map */
