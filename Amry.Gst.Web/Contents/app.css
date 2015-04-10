@@ -1,4 +1,7 @@
-﻿tr + tr.no-result {
+﻿form {
+  margin-bottom: 30px;
+}
+tr + tr.no-result {
   display: none;
 }
 tr.no-result > td {
