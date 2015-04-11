@@ -23,7 +23,11 @@ angular
                 $scope.results = results;
 
                 var promise = results.$promise
+                    .then(function(e) {
+                        ga('send', 'event', 'search', $scope.searchType, 'success', e.length);
+                    })
                     .catch(function(e) {
+                        ga('send', 'event', 'search', $scope.searchType, 'fail');
                         alert(e.statusText + ': ' + e.data);
                     });
                 $scope.promise = promise;
