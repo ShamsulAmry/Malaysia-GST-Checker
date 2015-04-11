@@ -19,6 +19,8 @@ namespace Amry.Gst
             CookieContainer = new CookieContainer()
         };
 
+        Tuple<GstLookupInputType, string> _previousInput;
+        IList<IGstLookupResult> _previousResults;
         int _accessCount;
         GstLookupInputType? _inputType;
         bool _isInitialized;
@@ -26,6 +28,11 @@ namespace Amry.Gst
 
         public async Task<IList<IGstLookupResult>> LookupGstData(GstLookupInputType inputType, string input)
         {
+            var currentInput = Tuple.Create(inputType, input);
+            if (currentInput.Equals(_previousInput)) {
+                return _previousResults;
+            }
+
             GstInputValidator.ValidateInput(inputType, input);
 
             if (_accessCount > 0) {
@@ -48,8 +55,10 @@ namespace Amry.Gst
                     await SelectLookupInputType(inputType);
                 }
 
-                var result = await ExecuteLookup(input);
-                return result;
+                var results = await ExecuteLookup(input);
+                _previousInput = currentInput;
+                _previousResults = results;
+                return results;
             } catch (WebException ex) {
                 throw new InternalGstException(ex.Message);
             } finally {
