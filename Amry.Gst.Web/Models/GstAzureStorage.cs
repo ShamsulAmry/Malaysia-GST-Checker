@@ -44,7 +44,9 @@ namespace Amry.Gst.Web.Models
                     var cachedResult = CachedGstEntity.Create(lookupResults[0]);
                     var insertOp = TableOperation.Insert(cachedResult, true);
                     var insertResult = await Table.ExecuteAsync(insertOp);
-                    return new[] {(IGstLookupResult) insertResult.Result};
+                    var cachedResult2 = (CachedGstEntity) insertResult.Result;
+                    cachedResult2.IsLiveData = lookupResults[0].IsLiveData;
+                    return new[] {cachedResult2};
                 }
 
                 case GstLookupInputType.BusinessRegNumber: {
@@ -70,7 +72,9 @@ namespace Amry.Gst.Web.Models
                         var cachedResult = CachedGstEntity.Create(lookupResults[0]);
                         var insertOp = TableOperation.Insert(cachedResult, true);
                         var insertResult = await Table.ExecuteAsync(insertOp);
-                        return new[] {(IGstLookupResult) insertResult.Result};
+                        var cachedResult2 = (CachedGstEntity) insertResult.Result;
+                        cachedResult2.IsLiveData = lookupResults[0].IsLiveData;
+                        return new[] {cachedResult2};
                     }
                 }
 

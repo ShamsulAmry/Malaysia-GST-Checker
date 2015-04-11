@@ -30,6 +30,10 @@ namespace Amry.Gst
         {
             var currentInput = Tuple.Create(inputType, input);
             if (currentInput.Equals(_previousInput)) {
+                if (_previousResults.Count > 0) {
+                    var result = (GstLookupResult) _previousResults[0];
+                    result.IsLiveData = false;
+                }
                 return _previousResults;
             }
 

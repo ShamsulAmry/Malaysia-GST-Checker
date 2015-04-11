@@ -1,6 +1,5 @@
-﻿using System.Collections.Generic;
-using System.Threading.Tasks;
-using System.Web.Http;
+﻿using System.Web.Http;
+using Amry.Gst.Web.Models;
 
 namespace Amry.Gst.Web.Controllers
 {
@@ -13,9 +12,9 @@ namespace Amry.Gst.Web.Controllers
             _gstDataSource = gstDataSource;
         }
 
-        public Task<IList<IGstLookupResult>> Get(string id)
+        public IHttpActionResult Get(string id)
         {
-            return _gstDataSource.LookupGstData(GstLookupInputType.GstNumber, id);
+            return new PossiblyCachedResult(_gstDataSource.LookupGstData(GstLookupInputType.GstNumber, id));
         }
     }
 }

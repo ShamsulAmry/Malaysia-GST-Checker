@@ -12,12 +12,6 @@ namespace Amry.Gst.Web.Models
         public const string PartitionKeyForBusinessRegNumber = "REG";
 
         [DataMember]
-        public DateTimeOffset CacheTimestamp
-        {
-            get { return Timestamp.ToOffset(TimeSpan.FromHours(8)); }
-        }
-
-        [DataMember]
         public string GstNumber { get; set; }
 
         [DataMember]
@@ -28,6 +22,15 @@ namespace Amry.Gst.Web.Models
 
         [DataMember]
         public string Status { get; set; }
+
+        [DataMember]
+        public DateTimeOffset CacheTimestamp
+        {
+            get { return Timestamp.ToOffset(TimeSpan.FromHours(8)); }
+        }
+
+        [IgnoreProperty]
+        public bool IsLiveData { get; set; }
 
         public static string GetRowKeyForGstNumber(string gstNumber)
         {
