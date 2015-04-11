@@ -8,19 +8,24 @@ angular
         }]);
 
 angular
-    .module('gstApp', ['gstServices', 'ngSanitize'])
+    .module('gstApp', ['gstServices', 'ngSanitize', 'ngAnimate', 'cgBusy'])
     .controller('GstLookupCtrl', ['$scope', 'GstApi',
         function ($scope, GstApi) {
             $scope.searchType = 'GstNo';
+            $scope.searchText = '';
+            $scope.promise = null;
 
             $scope.executeSearch = function () {
-                $scope.results = GstApi.query({
+                var results = GstApi.query({
                     searchType: $scope.searchType,
                     searchText: $scope.searchText.replace(' ', '_')
-                }, function() {
-                    // Do nothing if successful
-                }, function (response) {
-                    alert(response.data.Message + ' ' + response.data.ExceptionMessage);
                 });
+                $scope.results = results;
+
+                var promise = results.$promise
+                    .catch(function(e) {
+                        alert(e.data.Message + ' ' + e.data.ExceptionMessage + '.');
+                    });
+                $scope.promise = promise;
             };
         }]);
