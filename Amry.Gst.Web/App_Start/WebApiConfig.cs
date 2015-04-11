@@ -8,6 +8,7 @@ namespace Amry.Gst.Web
         {
             // Web API configuration and services
             config.Formatters.Remove(config.Formatters.XmlFormatter);
+            config.Filters.Add(new GstExceptionFilterAttribute());
 
             // Web API routes
             config.MapHttpAttributeRoutes();

@@ -24,7 +24,7 @@ angular
 
                 var promise = results.$promise
                     .catch(function(e) {
-                        alert(e.data.Message + ' ' + e.data.ExceptionMessage + '.');
+                        alert(e.statusText + ': ' + e.data);
                     });
                 $scope.promise = promise;
             };
