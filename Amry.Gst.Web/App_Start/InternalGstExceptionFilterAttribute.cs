@@ -6,11 +6,11 @@ using Amry.Gst.Web.Properties;
 
 namespace Amry.Gst.Web
 {
-    public class InvalidGstSearchInputExceptionFilterAttribute : ExceptionFilterAttribute
+    public class InternalGstExceptionFilterAttribute : ExceptionFilterAttribute
     {
         public override void OnException(HttpActionExecutedContext context)
         {
-            var ex = context.Exception as InvalidGstSearchInputException;
+            var ex = context.Exception as InternalGstException;
             if (ex == null) {
                 base.OnException(context);
                 return;

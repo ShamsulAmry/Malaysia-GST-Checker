@@ -50,12 +50,14 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CustomsGstException.cs" />
+    <Compile Include="GstInputValidator.cs" />
     <Compile Include="GstJsonResult.cs" />
     <Compile Include="GstLookupInputType.cs" />
     <Compile Include="GstLookupResult.cs" />
     <Compile Include="GstWebScraper.cs" />
+    <Compile Include="GstWebScraperPool.cs" />
     <Compile Include="IGstDataSource.cs" />
-    <Compile Include="InvalidGstSearchInputException.cs" />
+    <Compile Include="InternalGstException.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>

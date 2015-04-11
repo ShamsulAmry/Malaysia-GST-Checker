@@ -13,9 +13,10 @@ namespace Amry.Gst.Web
             var builder = new ContainerBuilder();
             builder.RegisterApiControllers(Assembly.GetExecutingAssembly());
 
-            builder.RegisterType<GstWebScraper>()
-                .Named<IGstDataSource>("kastam");
-            builder.RegisterDecorator<IGstDataSource>(source => new GstAzureStorage(source), fromKey: "kastam");
+            builder.RegisterType<GstWebScraperPool>()
+                .Named<IGstDataSource>("kastam-pool");
+            builder.RegisterDecorator<IGstDataSource>(source => new GstAzureStorage(source), fromKey: "kastam-pool")
+                .SingleInstance();
 
             var container = builder.Build();
             GlobalConfiguration.Configuration.DependencyResolver = new AutofacWebApiDependencyResolver(container);
