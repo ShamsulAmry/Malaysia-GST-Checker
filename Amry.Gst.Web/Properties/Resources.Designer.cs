@@ -63,9 +63,9 @@ namespace Amry.Gst.Web.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Customs&apos; server returned an error.
         /// </summary>
-        internal static string GstExceptionHttpResponseReasonPhrase {
+        internal static string CustomsGstExceptionHttpResponseReasonPhrase {
             get {
-                return ResourceManager.GetString("GstExceptionHttpResponseReasonPhrase", resourceCulture);
+                return ResourceManager.GetString("CustomsGstExceptionHttpResponseReasonPhrase", resourceCulture);
             }
         }
     }

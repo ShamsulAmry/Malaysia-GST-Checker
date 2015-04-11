@@ -4,6 +4,7 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Net;
+using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using Amry.Gst.Properties;
@@ -15,6 +16,8 @@ namespace Amry.Gst
 {
     public class GstWebScraper : IGstDataSource
     {
+        static readonly Regex GstNumberRegex = new Regex(@"^\d{12}$", RegexOptions.CultureInvariant | RegexOptions.Singleline | RegexOptions.Compiled);
+
         readonly RestClient _client = new RestClient("https://gst.customs.gov.my/TAP/") {
             CookieContainer = new CookieContainer()
         };
@@ -26,6 +29,10 @@ namespace Amry.Gst
 
         public async Task<IList<IGstLookupResult>> LookupGstData(GstLookupInputType inputType, string input)
         {
+            if (inputType == GstLookupInputType.GstNumber && !GstNumberRegex.IsMatch(input)) {
+                
+            }
+
             if (_accessCount > 0) {
                 throw new NotSupportedException(Resources.SingleLookupErrorMessage);
             }
@@ -136,7 +143,7 @@ namespace Amry.Gst
 
             var errorField = jsonResult.Updates.FieldUpdates.FirstOrDefault(x => x.IndicatorClass == "FieldError");
             if (errorField != null) {
-                throw new GstException(errorField.Message);
+                throw new CustomsGstException(errorField.Message);
             }
 
             var resultField = jsonResult.Updates.FieldUpdates.LastOrDefault();

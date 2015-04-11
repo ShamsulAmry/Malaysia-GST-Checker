@@ -6,11 +6,11 @@ using Amry.Gst.Web.Properties;
 
 namespace Amry.Gst.Web
 {
-    public class GstExceptionFilterAttribute : ExceptionFilterAttribute
+    public class CustomsGstExceptionFilterAttribute : ExceptionFilterAttribute
     {
         public override void OnException(HttpActionExecutedContext context)
         {
-            var ex = context.Exception as GstException;
+            var ex = context.Exception as CustomsGstException;
             if (ex == null) {
                 base.OnException(context);
                 return;
@@ -18,7 +18,7 @@ namespace Amry.Gst.Web
 
             context.Exception = new HttpResponseException(
                 new HttpResponseMessage(HttpStatusCode.InternalServerError) {
-                    ReasonPhrase = Resources.GstExceptionHttpResponseReasonPhrase,
+                    ReasonPhrase = Resources.CustomsGstExceptionHttpResponseReasonPhrase,
                     Content = new StringContent(ex.Message)
                 });
             base.OnException(context);
