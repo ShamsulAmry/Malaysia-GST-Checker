@@ -8,6 +8,15 @@ namespace Amry.Gst.Web.Models
     [DataContract]
     class CachedGstEntity : TableEntity, IGstLookupResult
     {
+        public const string PartitionKeyForGstNumber = "GST";
+        public const string PartitionKeyForBusinessRegNumber = "REG";
+
+        [DataMember]
+        public DateTimeOffset CacheTimestamp
+        {
+            get { return Timestamp.ToOffset(TimeSpan.FromHours(8)); }
+        }
+
         [DataMember]
         public string GstNumber { get; set; }
 
@@ -20,29 +29,25 @@ namespace Amry.Gst.Web.Models
         [DataMember]
         public string Status { get; set; }
 
-        [DataMember]
-        public DateTimeOffset CacheTimestamp
+        public static string GetRowKeyForGstNumber(string gstNumber)
         {
-            get { return Timestamp.ToOffset(TimeSpan.FromHours(8)); }
+            return gstNumber;
         }
 
-        public static string GetPartitionKeyForGstNumber(string gstNumber)
+        public static string GetRowKeyForBusinessRegNumber(string businessRegNumber)
         {
-            return "GST-" + gstNumber;
-        }
-
-        public static string GetPartitionKeyForBusinessRegNumber(string businessRegNumber)
-        {
-            return "REG-" + new string(businessRegNumber.Where(char.IsLetterOrDigit).Select(char.ToUpperInvariant).ToArray());
+            return new string(businessRegNumber.Where(char.IsLetterOrDigit).Select(char.ToUpperInvariant).ToArray());
         }
 
         public static CachedGstEntity Create(IGstLookupResult other, string businessRegNumber = null)
         {
             return new CachedGstEntity {
                 PartitionKey = businessRegNumber == null
-                    ? GetPartitionKeyForGstNumber(other.GstNumber)
-                    : GetPartitionKeyForBusinessRegNumber(businessRegNumber),
-                RowKey = "",
+                    ? PartitionKeyForGstNumber
+                    : PartitionKeyForBusinessRegNumber,
+                RowKey = businessRegNumber == null
+                    ? GetRowKeyForGstNumber(other.GstNumber)
+                    : GetRowKeyForBusinessRegNumber(businessRegNumber),
                 GstNumber = other.GstNumber,
                 BusinessName = other.BusinessName,
                 CommenceDate = other.CommenceDate,

@@ -30,7 +30,9 @@ namespace Amry.Gst.Web.Models
         {
             switch (inputType) {
                 case GstLookupInputType.GstNumber: {
-                    var getOp = TableOperation.Retrieve<CachedGstEntity>(CachedGstEntity.GetPartitionKeyForGstNumber(input), "");
+                    var getOp = TableOperation.Retrieve<CachedGstEntity>(
+                        CachedGstEntity.PartitionKeyForGstNumber,
+                        CachedGstEntity.GetRowKeyForGstNumber(input));
                     var getResult = await Table.ExecuteAsync(getOp);
                     if (getResult.Result != null) {
                         return new[] {(IGstLookupResult) getResult.Result};
@@ -46,7 +48,9 @@ namespace Amry.Gst.Web.Models
                 }
 
                 case GstLookupInputType.BusinessRegNumber: {
-                    var getOp = TableOperation.Retrieve<CachedGstEntity>(CachedGstEntity.GetPartitionKeyForBusinessRegNumber(input), "");
+                    var getOp = TableOperation.Retrieve<CachedGstEntity>(
+                        CachedGstEntity.PartitionKeyForBusinessRegNumber,
+                        CachedGstEntity.GetRowKeyForBusinessRegNumber(input));
                     var getResult = await Table.ExecuteAsync(getOp);
                     if (getResult.Result != null) {
                         return new[] {(IGstLookupResult) getResult.Result};
