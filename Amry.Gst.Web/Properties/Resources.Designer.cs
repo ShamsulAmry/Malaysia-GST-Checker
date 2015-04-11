@@ -68,5 +68,14 @@ namespace Amry.Gst.Web.Properties {
                 return ResourceManager.GetString("CustomsGstExceptionHttpResponseReasonPhrase", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Invalid search input.
+        /// </summary>
+        internal static string InvalidGstSearchInputExceptionHttpResponseReasonPhrase {
+            get {
+                return ResourceManager.GetString("InvalidGstSearchInputExceptionHttpResponseReasonPhrase", resourceCulture);
+            }
+        }
     }
 }

@@ -120,4 +120,7 @@
   <data name="CustomsGstExceptionHttpResponseReasonPhrase" xml:space="preserve">
     <value>Customs' server returned an error</value>
   </data>
+  <data name="InvalidGstSearchInputExceptionHttpResponseReasonPhrase" xml:space="preserve">
+    <value>Invalid search input</value>
+  </data>
 </root>

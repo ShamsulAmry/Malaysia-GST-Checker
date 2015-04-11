@@ -61,6 +61,33 @@ namespace Amry.Gst.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Business Name query must be more than 3 characters.
+        /// </summary>
+        internal static string BusinessNameTooShortValidationMessage {
+            get {
+                return ResourceManager.GetString("BusinessNameTooShortValidationMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Business Registration Number should only consist of digits, letters or dashes.
+        /// </summary>
+        internal static string InvalidBusinessRegNumberValidationMessage {
+            get {
+                return ResourceManager.GetString("InvalidBusinessRegNumberValidationMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to GST Number query must consist of 12 digits.
+        /// </summary>
+        internal static string InvalidGstNumberValidationMessage {
+            get {
+                return ResourceManager.GetString("InvalidGstNumberValidationMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to A single instance of GstWebScraper is not thread-safe and can only do one lookup at a time..
         /// </summary>
         internal static string SingleLookupErrorMessage {

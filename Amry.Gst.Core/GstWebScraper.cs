@@ -17,6 +17,7 @@ namespace Amry.Gst
     public class GstWebScraper : IGstDataSource
     {
         static readonly Regex GstNumberRegex = new Regex(@"^\d{12}$", RegexOptions.CultureInvariant | RegexOptions.Singleline | RegexOptions.Compiled);
+        static readonly Regex BusinessRegNumberRegex = new Regex(@"^[A-Za-z0-9\-]+$", RegexOptions.CultureInvariant | RegexOptions.Singleline | RegexOptions.Compiled);
 
         readonly RestClient _client = new RestClient("https://gst.customs.gov.my/TAP/") {
             CookieContainer = new CookieContainer()
@@ -30,7 +31,15 @@ namespace Amry.Gst
         public async Task<IList<IGstLookupResult>> LookupGstData(GstLookupInputType inputType, string input)
         {
             if (inputType == GstLookupInputType.GstNumber && !GstNumberRegex.IsMatch(input)) {
-                
+                throw new InvalidGstSearchInputException(Resources.InvalidGstNumberValidationMessage);
+            }
+
+            if (inputType == GstLookupInputType.BusinessRegNumber && !BusinessRegNumberRegex.IsMatch(input)) {
+                throw new InvalidGstSearchInputException(Resources.InvalidBusinessRegNumberValidationMessage);
+            }
+
+            if (inputType == GstLookupInputType.BusinessName && input.Length <= 3) {
+                throw new InvalidGstSearchInputException(Resources.BusinessNameTooShortValidationMessage);
             }
 
             if (_accessCount > 0) {

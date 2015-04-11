@@ -150,7 +150,7 @@
     <Content Include="Web.config" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="CustomsGstExceptionFilterAttribute.cs" />
+    <Compile Include="App_Start\CustomsGstExceptionFilterAttribute.cs" />
     <Compile Include="App_Start\AutofacConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\WebApiConfig.cs" />
@@ -161,6 +161,7 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="App_Start\InvalidGstSearchInputExceptionFilterAttribute.cs" />
     <Compile Include="Models\CachedGstEntity.cs" />
     <Compile Include="Models\GstAzureStorage.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

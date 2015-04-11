@@ -117,6 +117,15 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="BusinessNameTooShortValidationMessage" xml:space="preserve">
+    <value>Business Name query must be more than 3 characters</value>
+  </data>
+  <data name="InvalidBusinessRegNumberValidationMessage" xml:space="preserve">
+    <value>Business Registration Number should only consist of digits, letters or dashes</value>
+  </data>
+  <data name="InvalidGstNumberValidationMessage" xml:space="preserve">
+    <value>GST Number query must consist of 12 digits</value>
+  </data>
   <data name="SingleLookupErrorMessage" xml:space="preserve">
     <value>A single instance of GstWebScraper is not thread-safe and can only do one lookup at a time.</value>
   </data>

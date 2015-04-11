@@ -33,7 +33,7 @@ namespace Amry.Gst.Web.Models
 
         public static string GetPartitionKeyForBusinessRegNumber(string businessRegNumber)
         {
-            return "REG-" + businessRegNumber.Where(char.IsLetterOrDigit).Select(char.ToUpperInvariant);
+            return "REG-" + new string(businessRegNumber.Where(char.IsLetterOrDigit).Select(char.ToUpperInvariant).ToArray());
         }
 
         public static CachedGstEntity Create(IGstLookupResult other, string businessRegNumber = null)
