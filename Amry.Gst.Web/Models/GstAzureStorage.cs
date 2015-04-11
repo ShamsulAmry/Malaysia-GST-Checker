@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Amry.Gst.Web.Properties;
 using Microsoft.WindowsAzure.Storage;
 using Microsoft.WindowsAzure.Storage.Table;
 
@@ -14,7 +15,7 @@ namespace Amry.Gst.Web.Models
 
         static GstAzureStorage()
         {
-            var account = CloudStorageAccount.DevelopmentStorageAccount;
+            var account = CloudStorageAccount.Parse(Settings.Default.AzureStorage);
             var client = account.CreateCloudTableClient();
             Table = client.GetTableReference("gst");
             Table.CreateIfNotExists();
