@@ -3,6 +3,7 @@
     public enum PageTag
     {
         Home,
-        About
+        About,
+        Api
     }
 }

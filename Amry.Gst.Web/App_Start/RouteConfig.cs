@@ -8,12 +8,7 @@ namespace Amry.Gst.Web
         public static void RegisterRoutes(RouteCollection routes)
         {
             routes.IgnoreRoute("{resource}.axd/{*pathInfo}");
-
-            routes.MapRoute(
-                name: "Home",
-                url: "{action}",
-                defaults: new { controller = "Home", action = "Index" }
-            );
+            routes.MapMvcAttributeRoutes();
         }
     }
 }
