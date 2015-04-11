@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Net;
 using System.Threading.Tasks;
 using Amry.Gst.Web.Properties;
 using Microsoft.WindowsAzure.Storage;
@@ -16,6 +17,11 @@ namespace Amry.Gst.Web.Models
         static GstAzureStorage()
         {
             var account = CloudStorageAccount.Parse(Settings.Default.AzureStorage);
+            var tableServicePoint = ServicePointManager.FindServicePoint(account.TableEndpoint);
+            tableServicePoint.UseNagleAlgorithm = false;
+            tableServicePoint.Expect100Continue = false;
+            tableServicePoint.ConnectionLimit = 100;
+
             var client = account.CreateCloudTableClient();
             Table = client.GetTableReference("gst");
             Table.CreateIfNotExists();

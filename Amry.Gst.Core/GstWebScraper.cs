@@ -15,7 +15,9 @@ namespace Amry.Gst
 {
     public class GstWebScraper : IGstDataSource
     {
-        readonly RestClient _client = new RestClient("https://gst.customs.gov.my/TAP/") {
+        static readonly Uri CustomsEndpoint = new Uri("https://gst.customs.gov.my/TAP/");
+
+        readonly RestClient _client = new RestClient(CustomsEndpoint) {
             CookieContainer = new CookieContainer()
         };
 
@@ -25,6 +27,14 @@ namespace Amry.Gst
         GstLookupInputType? _inputType;
         bool _isInitialized;
         string _token;
+
+        static GstWebScraper()
+        {
+            var customsServicePoint = ServicePointManager.FindServicePoint(CustomsEndpoint);
+            customsServicePoint.UseNagleAlgorithm = false;
+            customsServicePoint.Expect100Continue = false;
+            customsServicePoint.ConnectionLimit = 30;
+        }
 
         public async Task<IList<IGstLookupResult>> LookupGstData(GstLookupInputType inputType, string input)
         {
