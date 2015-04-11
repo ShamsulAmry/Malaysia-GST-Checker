@@ -4,6 +4,9 @@
 tr.no-result > td {
   text-align: center;
 }
+ol > li {
+  margin-top: 20px;
+}
 @media screen and (max-width: 600px) {
   table {
     border: 0;

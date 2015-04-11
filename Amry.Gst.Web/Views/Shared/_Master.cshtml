@@ -1,4 +1,10 @@
-﻿<!DOCTYPE html>
+﻿@functions {
+    string BootstrapCssActive(PageTag current)
+    {
+        return current == ViewBag.PageTag ? "active" : null;
+    }
+}
+<!DOCTYPE html>
 <html lang="en" ng-app="@ViewBag.AngularAppName">
 <head>
     <meta charset="utf-8">
@@ -9,13 +15,21 @@
 
     <!-- Bootstrap -->
     <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="~/Contents/app.min.css" rel="stylesheet" />
+
     @RenderSection("Head", false)
 </head>
 <body ng-controller="@ViewBag.AngularControllerName" cg-busy="@ViewBag.AngularBusyPromise">
     <nav class="navbar navbar-inverse">
         <div class="container">
             <div class="navbar-header">
-                <div class="navbar-brand">Malaysia GST Checker</div>
+                <a href="/" class="navbar-brand">Malaysia GST Checker</a>
+            </div>
+            <div id="navbar" class="collapse navbar-collapse">
+                <ul class="nav navbar-nav">
+                    <li class="@BootstrapCssActive(PageTag.Home)"><a href="/">Home</a></li>
+                    <li class="@BootstrapCssActive(PageTag.About)"><a href="/about">About</a></li>
+                </ul>
             </div>
         </div>
     </nav>
@@ -23,7 +37,7 @@
     <div class="container">
         @RenderBody()
     </div>
-    
+
     @RenderSection("BodyEnd", false)
 </body>
 </html>
