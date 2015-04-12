@@ -36,7 +36,7 @@ namespace Amry.Gst
             customsServicePoint.ConnectionLimit = 30;
         }
 
-        public async Task<IList<IGstLookupResult>> LookupGstDataAsync(GstLookupInputType inputType, string input)
+        public async Task<IList<IGstLookupResult>> LookupGstDataAsync(GstLookupInputType inputType, string input, bool validateInput = false)
         {
             var currentInput = Tuple.Create(inputType, input);
             if (currentInput.Equals(_previousInput)) {
@@ -47,7 +47,9 @@ namespace Amry.Gst
                 return _previousResults;
             }
 
-            GstInputValidator.ValidateInput(inputType, input);
+            if (validateInput) {
+                GstInputValidator.ValidateInput(inputType, input);
+            }
 
             if (_accessCount > 0) {
                 throw new NotSupportedException(Resources.SingleLookupErrorMessage);

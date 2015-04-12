@@ -17,9 +17,11 @@ namespace Amry.Gst
             };
         }
 
-        public async Task<IList<IGstLookupResult>> LookupGstDataAsync(GstLookupInputType inputType, string input)
+        public async Task<IList<IGstLookupResult>> LookupGstDataAsync(GstLookupInputType inputType, string input, bool validateInput = false)
         {
-            GstInputValidator.ValidateInput(inputType, input);
+            if (validateInput) {
+                GstInputValidator.ValidateInput(inputType, input);
+            }
 
             var pool = _pools[inputType];
 

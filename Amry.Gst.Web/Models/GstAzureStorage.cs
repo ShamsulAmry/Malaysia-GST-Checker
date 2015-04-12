@@ -34,8 +34,12 @@ namespace Amry.Gst.Web.Models
             _dataSource = dataSource;
         }
 
-        public async Task<IList<IGstLookupResult>> LookupGstDataAsync(GstLookupInputType inputType, string input)
+        public async Task<IList<IGstLookupResult>> LookupGstDataAsync(GstLookupInputType inputType, string input, bool validateInput = false)
         {
+            if (validateInput) {
+                GstInputValidator.ValidateInput(inputType, input);
+            }
+
             switch (inputType) {
                 case GstLookupInputType.GstNumber: {
                     var getOp = TableOperation.Retrieve<CachedGstEntity>(
