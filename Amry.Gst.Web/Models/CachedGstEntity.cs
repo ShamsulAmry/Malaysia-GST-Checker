@@ -10,6 +10,7 @@ namespace Amry.Gst.Web.Models
     {
         public const string PartitionKeyForGstNumber = "GST";
         public const string PartitionKeyForBusinessRegNumber = "REG";
+        public const string PartitionKeyPrefixForBusinessNameQuery = "NAME:";
 
         [DataMember]
         public string GstNumber { get; set; }
@@ -29,8 +30,10 @@ namespace Amry.Gst.Web.Models
             get { return Timestamp.ToOffset(TimeSpan.FromHours(8)); }
         }
 
-        [IgnoreProperty]
-        public bool IsLiveData { get; set; }
+        public bool IsLiveData
+        {
+            get { return false; }
+        }
 
         public static string GetRowKeyForGstNumber(string gstNumber)
         {
@@ -42,15 +45,40 @@ namespace Amry.Gst.Web.Models
             return new string(businessRegNumber.Where(char.IsLetterOrDigit).Select(char.ToUpperInvariant).ToArray());
         }
 
-        public static CachedGstEntity Create(IGstLookupResult other, string businessRegNumber = null)
+        public static string GetPartitionKeyForBusinessNameQuery(string businessNameQuery)
+        {
+            return PartitionKeyPrefixForBusinessNameQuery + businessNameQuery.Replace(' ', '_');
+        }
+
+        public static CachedGstEntity CreateForGstNumberQuery(IGstLookupResult other)
         {
             return new CachedGstEntity {
-                PartitionKey = businessRegNumber == null
-                    ? PartitionKeyForGstNumber
-                    : PartitionKeyForBusinessRegNumber,
-                RowKey = businessRegNumber == null
-                    ? GetRowKeyForGstNumber(other.GstNumber)
-                    : GetRowKeyForBusinessRegNumber(businessRegNumber),
+                PartitionKey = PartitionKeyForGstNumber,
+                RowKey = GetRowKeyForGstNumber(other.GstNumber),
+                GstNumber = other.GstNumber,
+                BusinessName = other.BusinessName,
+                CommenceDate = other.CommenceDate,
+                Status = other.Status
+            };
+        }
+
+        public static CachedGstEntity CreateForBusinessRegNumberQuery(IGstLookupResult other, string businessRegNumber)
+        {
+            return new CachedGstEntity {
+                PartitionKey = PartitionKeyForBusinessRegNumber,
+                RowKey = GetRowKeyForBusinessRegNumber(businessRegNumber),
+                GstNumber = other.GstNumber,
+                BusinessName = other.BusinessName,
+                CommenceDate = other.CommenceDate,
+                Status = other.Status
+            };
+        }
+
+        public static CachedGstEntity CreateForBusinessNameQuery(IGstLookupResult other, string businessName, int sequence)
+        {
+            return new CachedGstEntity {
+                PartitionKey = GetPartitionKeyForBusinessNameQuery(businessName),
+                RowKey = sequence.ToString("000"),
                 GstNumber = other.GstNumber,
                 BusinessName = other.BusinessName,
                 CommenceDate = other.CommenceDate,

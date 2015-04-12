@@ -25,13 +25,13 @@ namespace Amry.Gst
         }
 
         [DataMember]
+        public string GstNumber { get; private set; }
+
+        [DataMember]
         public string BusinessName { get; private set; }
 
         [DataMember]
         public string CommenceDate { get; private set; }
-
-        [DataMember]
-        public string GstNumber { get; private set; }
 
         [DataMember]
         public string Status { get; private set; }

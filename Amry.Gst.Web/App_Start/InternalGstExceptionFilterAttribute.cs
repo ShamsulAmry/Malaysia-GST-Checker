@@ -17,8 +17,8 @@ namespace Amry.Gst.Web
             }
 
             context.Exception = new HttpResponseException(
-                new HttpResponseMessage(HttpStatusCode.Forbidden) {
-                    ReasonPhrase = Resources.InvalidGstSearchInputExceptionHttpResponseReasonPhrase,
+                new HttpResponseMessage(HttpStatusCode.InternalServerError) {
+                    ReasonPhrase = Resources.InternalGstExceptionHttpResponseReasonPhrase,
                     Content = new StringContent(ex.Message)
                 });
             base.OnException(context);
