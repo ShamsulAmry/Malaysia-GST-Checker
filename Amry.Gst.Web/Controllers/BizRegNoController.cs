@@ -14,7 +14,7 @@ namespace Amry.Gst.Web.Controllers
 
         public IHttpActionResult Get(string id)
         {
-            return new PossiblyCachedResult(_gstDataSource.LookupGstData(GstLookupInputType.BusinessRegNumber, id));
+            return new PossiblyCachedResult(_gstDataSource.LookupGstDataAsync(GstLookupInputType.BusinessRegNumber, id));
         }
     }
 }

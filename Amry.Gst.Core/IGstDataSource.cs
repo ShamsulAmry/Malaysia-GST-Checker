@@ -5,6 +5,6 @@ namespace Amry.Gst
 {
     public interface IGstDataSource
     {
-        Task<IList<IGstLookupResult>> LookupGstData(GstLookupInputType inputType, string input);
+        Task<IList<IGstLookupResult>> LookupGstDataAsync(GstLookupInputType inputType, string input);
     }
 }

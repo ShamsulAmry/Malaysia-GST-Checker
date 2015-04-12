@@ -36,7 +36,7 @@ namespace Amry.Gst
             customsServicePoint.ConnectionLimit = 30;
         }
 
-        public async Task<IList<IGstLookupResult>> LookupGstData(GstLookupInputType inputType, string input)
+        public async Task<IList<IGstLookupResult>> LookupGstDataAsync(GstLookupInputType inputType, string input)
         {
             var currentInput = Tuple.Create(inputType, input);
             if (currentInput.Equals(_previousInput)) {

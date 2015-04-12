@@ -34,7 +34,7 @@ namespace Amry.Gst.Web.Models
             _dataSource = dataSource;
         }
 
-        public async Task<IList<IGstLookupResult>> LookupGstData(GstLookupInputType inputType, string input)
+        public async Task<IList<IGstLookupResult>> LookupGstDataAsync(GstLookupInputType inputType, string input)
         {
             switch (inputType) {
                 case GstLookupInputType.GstNumber: {
@@ -46,7 +46,7 @@ namespace Amry.Gst.Web.Models
                         return new[] {(IGstLookupResult) getResult.Result};
                     }
 
-                    var lookupResults = await _dataSource.LookupGstData(inputType, input);
+                    var lookupResults = await _dataSource.LookupGstDataAsync(inputType, input);
                     if (lookupResults.Count == 0) {
                         return lookupResults;
                     }
@@ -66,7 +66,7 @@ namespace Amry.Gst.Web.Models
                         return new[] {(IGstLookupResult) getResult.Result};
                     }
 
-                    var lookupResults = await _dataSource.LookupGstData(inputType, input);
+                    var lookupResults = await _dataSource.LookupGstDataAsync(inputType, input);
                     if (lookupResults.Count == 0) {
                         return lookupResults;
                     }
@@ -101,7 +101,7 @@ namespace Amry.Gst.Web.Models
                         return cachedResults;
                     }
 
-                    var lookupResults = await _dataSource.LookupGstData(inputType, input);
+                    var lookupResults = await _dataSource.LookupGstDataAsync(inputType, input);
                     if (lookupResults.Count == 0) {
                         return lookupResults;
                     }

@@ -17,7 +17,7 @@ namespace Amry.Gst
             };
         }
 
-        public async Task<IList<IGstLookupResult>> LookupGstData(GstLookupInputType inputType, string input)
+        public async Task<IList<IGstLookupResult>> LookupGstDataAsync(GstLookupInputType inputType, string input)
         {
             GstInputValidator.ValidateInput(inputType, input);
 
@@ -29,7 +29,7 @@ namespace Amry.Gst
             }
 
             try {
-                return await scraper.LookupGstData(inputType, input);
+                return await scraper.LookupGstDataAsync(inputType, input);
             } finally {
                 pool.Enqueue(scraper);
             }
