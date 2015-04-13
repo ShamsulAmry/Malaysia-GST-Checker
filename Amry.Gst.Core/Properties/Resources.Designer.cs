@@ -88,6 +88,15 @@ namespace Amry.Gst.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Over 100 Results Returned. Please Narrow Search..
+        /// </summary>
+        internal static string Over100Results {
+            get {
+                return ResourceManager.GetString("Over100Results", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to A single instance of GstWebScraper is not thread-safe and can only do one lookup at a time..
         /// </summary>
         internal static string SingleLookupErrorMessage {

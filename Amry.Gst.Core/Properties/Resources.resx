@@ -126,6 +126,9 @@
   <data name="InvalidGstNumberValidationMessage" xml:space="preserve">
     <value>GST Number query must consist of 12 digits</value>
   </data>
+  <data name="Over100Results" xml:space="preserve">
+    <value>Over 100 Results Returned. Please Narrow Search.</value>
+  </data>
   <data name="SingleLookupErrorMessage" xml:space="preserve">
     <value>A single instance of GstWebScraper is not thread-safe and can only do one lookup at a time.</value>
   </data>

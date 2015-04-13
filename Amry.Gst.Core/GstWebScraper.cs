@@ -27,6 +27,9 @@ namespace Amry.Gst
         GstLookupInputType? _inputType;
         bool _isInitialized;
         string _token;
+        bool _daShowResults;
+        bool _diNoRegistrantsFound;
+        bool _dlOver100Results;
 
         static GstWebScraper()
         {
@@ -172,24 +175,45 @@ namespace Amry.Gst
                 throw new CustomsGstException(errorField.Message);
             }
 
-            // If there is no previous result returned by the Customs' server, they will not return any table output.
-            var resultField = jsonResult.Updates.FieldUpdates.FirstOrDefault(update => update.IsTable == true);
-            if (resultField == null) {
-                return new GstLookupResult[0];
+            // Keep track of Customs' page state
+            foreach (var update in jsonResult.Updates.FieldUpdates) {
+                switch (update.Field) {
+                    case "d-a":
+                        _daShowResults = update.Visible ?? false;
+                        break;
+
+                    case "d-i":
+                        _diNoRegistrantsFound = update.Visible ?? false;
+                        break;
+
+                    case "d-l":
+                        _dlOver100Results = update.Visible ?? false;
+                        break;
+                }
             }
 
+            if (_dlOver100Results) {
+                throw new CustomsGstException(Resources.Over100Results);
+            }
+
+            if (_diNoRegistrantsFound || !_daShowResults) {
+                return new IGstLookupResult[0];
+            }
+
+            // If there is no previous result returned by the Customs' server 
+            // and current result is also empty, they will not return any table output.
+            var resultField = jsonResult.Updates.FieldUpdates.FirstOrDefault(update => update.Field == "d-f");
+            if (resultField == null) {
+                return new IGstLookupResult[0];
+            }
+
+            // Other than that, return the result here.
             var htmlStr = resultField.Value;
             var htmlDoc = new HtmlDocument();
             htmlDoc.LoadHtml(htmlStr);
 
-            // If there is a previous result returned by the Customs' server, they will return a table without a tbody.
-            var tdNodes = htmlDoc.DocumentNode.SelectNodes("//tbody/tr/td");
-            if (tdNodes == null) {
-                return new GstLookupResult[0];
-            }
-
-            // Other than that, return the result here.
-            var cellTexts = tdNodes
+            var cellTexts = htmlDoc.DocumentNode
+                .SelectNodes("//tbody/tr/td")
                 .Select(x => x.InnerText)
                 .ToArray();
 
