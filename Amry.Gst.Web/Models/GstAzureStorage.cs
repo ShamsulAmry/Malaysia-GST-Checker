@@ -5,6 +5,7 @@ using System.Net;
 using System.Threading.Tasks;
 using Amry.Gst.Web.Properties;
 using Microsoft.WindowsAzure.Storage;
+using Microsoft.WindowsAzure.Storage.Queue;
 using Microsoft.WindowsAzure.Storage.Table;
 using Microsoft.WindowsAzure.Storage.Table.Queryable;
 
@@ -13,20 +14,38 @@ namespace Amry.Gst.Web.Models
     class GstAzureStorage : IGstDataSource
     {
         static readonly CloudTable Table;
+        static readonly CloudQueue DeletionQueue;
 
         readonly IGstDataSource _dataSource;
 
         static GstAzureStorage()
         {
             var account = CloudStorageAccount.Parse(Settings.Default.AzureStorage);
-            var tableServicePoint = ServicePointManager.FindServicePoint(account.TableEndpoint);
-            tableServicePoint.UseNagleAlgorithm = false;
-            tableServicePoint.Expect100Continue = false;
-            tableServicePoint.ConnectionLimit = 100;
+            var createTasks = new List<Task>();
+            
+            {
+                var servicePoint = ServicePointManager.FindServicePoint(account.TableEndpoint);
+                servicePoint.UseNagleAlgorithm = false;
+                servicePoint.Expect100Continue = false;
+                servicePoint.ConnectionLimit = 100;
 
-            var client = account.CreateCloudTableClient();
-            Table = client.GetTableReference("gst");
-            Table.CreateIfNotExists();
+                var client = account.CreateCloudTableClient();
+                Table = client.GetTableReference("gst");
+                createTasks.Add(Table.CreateIfNotExistsAsync());
+            }
+
+            {
+                var servicePoint = ServicePointManager.FindServicePoint(account.QueueEndpoint);
+                servicePoint.UseNagleAlgorithm = false;
+                servicePoint.Expect100Continue = false;
+                servicePoint.ConnectionLimit = 100;
+
+                var client = account.CreateCloudQueueClient();
+                DeletionQueue = client.GetQueueReference("gst-delete");
+                createTasks.Add(DeletionQueue.CreateIfNotExistsAsync());
+            }
+
+            Task.WaitAll(createTasks.ToArray());
         }
 
         public GstAzureStorage(IGstDataSource dataSource)
@@ -76,13 +95,11 @@ namespace Amry.Gst.Web.Models
                     }
 
                     {
-                        // Insert business reg number partition key
                         var cachedResult = CachedGstEntity.CreateForBusinessRegNumberQuery(lookupResults[0], input);
                         var insertOp = TableOperation.Insert(cachedResult);
                         Table.ExecuteAsync(insertOp);
                     }
                     {
-                        // Insert GST number partition key
                         var cachedResult = CachedGstEntity.CreateForGstNumberQuery(lookupResults[0]);
                         var insertOp = TableOperation.Insert(cachedResult, true);
                         Table.ExecuteAsync(insertOp);
@@ -114,6 +131,14 @@ namespace Amry.Gst.Web.Models
                         CachedGstEntity.CreateForGstNumberQuery(result),
                         CachedGstEntity.CreateForBusinessNameQuery(result, input, i)
                     }));
+
+                    var twoDaysLater = DateTimeOffset.UtcNow.ToOffset(TimeSpan.FromHours(8)).AddDays(2);
+                    var atThreeAm = twoDaysLater.AddHours(3 - twoDaysLater.Hour);
+                    var timeDiffFromNow = atThreeAm - DateTime.Now;
+                    DeletionQueue.AddMessageAsync(
+                        new CloudQueueMessage(CachedGstEntity.GetPartitionKeyForBusinessNameQuery(input) + ":" + lookupResults.Count),
+                        null, timeDiffFromNow, null, null);
+
                     return lookupResults;
                 }
             }
