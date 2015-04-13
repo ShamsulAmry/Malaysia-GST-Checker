@@ -38,6 +38,8 @@ namespace Amry.Gst
 
         public async Task<IList<IGstLookupResult>> LookupGstDataAsync(GstLookupInputType inputType, string input, bool validateInput = false)
         {
+            // Customs' server will return empty result if I send the same request two times in a row, 
+            // so I'm going to cache the most recent result and return that if the same requests were sent twice.
             var currentInput = Tuple.Create(inputType, input);
             if (currentInput.Equals(_previousInput)) {
                 if (_previousResults.Count > 0) {
@@ -163,21 +165,31 @@ namespace Amry.Gst
             }
             var jsonResult = JsonConvert.DeserializeObject<GstJsonResult>(respContent);
 
+            // Pass on validation error message returned by the Customs' server.
+            // But I've already covered the validation I already knew of without having to send invalid request.
             var errorField = jsonResult.Updates.FieldUpdates.FirstOrDefault(x => x.IndicatorClass == "FieldError");
             if (errorField != null) {
                 throw new CustomsGstException(errorField.Message);
             }
 
-            var resultField = jsonResult.Updates.FieldUpdates.LastOrDefault();
-            if (resultField == null || resultField.IsTable == null) {
+            // If there is no previous result returned by the Customs' server, they will not return any table output.
+            var resultField = jsonResult.Updates.FieldUpdates.FirstOrDefault(update => update.IsTable == true);
+            if (resultField == null) {
                 return new GstLookupResult[0];
             }
 
             var htmlStr = resultField.Value;
             var htmlDoc = new HtmlDocument();
             htmlDoc.LoadHtml(htmlStr);
-            var cellTexts = htmlDoc.DocumentNode
-                .SelectNodes("//tbody/tr/td")
+
+            // If there is a previous result returned by the Customs' server, they will return a table without a tbody.
+            var tdNodes = htmlDoc.DocumentNode.SelectNodes("//tbody/tr/td");
+            if (tdNodes == null) {
+                return new GstLookupResult[0];
+            }
+
+            // Other than that, return the result here.
+            var cellTexts = tdNodes
                 .Select(x => x.InnerText)
                 .ToArray();
 
