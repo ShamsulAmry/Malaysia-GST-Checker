@@ -63,17 +63,17 @@ namespace Amry.Gst
                 }
 
                 if (!_isInitialized) {
-                    await InitializeToken();
-                    await LoadFrontPage();
-                    await BrowseToLookupPage();
+                    await InitializeTokenAsync();
+                    await LoadFrontPageAsync();
+                    await BrowseToLookupPageAsync();
                     _isInitialized = true;
                 }
 
                 if (_inputType == null || _inputType != inputType) {
-                    await SelectLookupInputType(inputType);
+                    await SelectLookupInputTypeAsync(inputType);
                 }
 
-                var results = await ExecuteLookup(input);
+                var results = await ExecuteLookupAsync(input);
                 _previousInput = currentInput;
                 _previousResults = results;
                 return results;
@@ -84,14 +84,14 @@ namespace Amry.Gst
             }
         }
 
-        async Task InitializeToken()
+        async Task InitializeTokenAsync()
         {
             var req = new RestRequest("GetWlbToken");
             var resp = await _client.ExecuteGetTaskAsync(req);
             UpdateTokenForNextRequest(resp);
         }
 
-        async Task LoadFrontPage()
+        async Task LoadFrontPageAsync()
         {
             var req = new RestRequest("_/");
             req.AddParameter("Load", 1);
@@ -100,7 +100,7 @@ namespace Amry.Gst
             UpdateTokenForNextRequest(resp);
         }
 
-        async Task BrowseToLookupPage()
+        async Task BrowseToLookupPageAsync()
         {
             var req = new RestRequest("_/EventOccurred");
             req.AddParameter("DOC_MODAL_ID__", 0);
@@ -110,7 +110,7 @@ namespace Amry.Gst
             UpdateTokenForNextRequest(resp);
         }
 
-        async Task SelectLookupInputType(GstLookupInputType inputType)
+        async Task SelectLookupInputTypeAsync(GstLookupInputType inputType)
         {
             var req = new RestRequest("_/Recalc");
 
@@ -135,7 +135,7 @@ namespace Amry.Gst
             _inputType = inputType;
         }
 
-        async Task<IList<IGstLookupResult>> ExecuteLookup(string input)
+        async Task<IList<IGstLookupResult>> ExecuteLookupAsync(string input)
         {
             var req = new RestRequest("_/Recalc");
 
