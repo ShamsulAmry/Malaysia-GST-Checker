@@ -47,7 +47,7 @@ namespace Amry.Gst.Web.Models
 
         public static string GetPartitionKeyForBusinessNameQuery(string businessNameQuery)
         {
-            return PartitionKeyPrefixForBusinessNameQuery + businessNameQuery.Replace(' ', '_');
+            return PartitionKeyPrefixForBusinessNameQuery + businessNameQuery.ToUpperInvariant().Replace(' ', '_');
         }
 
         public static CachedGstEntity CreateForGstNumberQuery(IGstLookupResult other)
