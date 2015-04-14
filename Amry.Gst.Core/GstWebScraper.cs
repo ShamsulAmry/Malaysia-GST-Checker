@@ -17,10 +17,12 @@ namespace Amry.Gst
     {
         static readonly Uri CustomsEndpoint = new Uri("https://gst.customs.gov.my/TAP/");
 
+        readonly DateTime _startTime = DateTime.Now;
         readonly RestClient _client = new RestClient(CustomsEndpoint) {
             CookieContainer = new CookieContainer()
         };
 
+        int _requestCount;
         Tuple<GstLookupInputType, string> _previousInput;
         IList<IGstLookupResult> _previousResults;
         int _accessCount;
@@ -37,6 +39,11 @@ namespace Amry.Gst
             customsServicePoint.UseNagleAlgorithm = false;
             customsServicePoint.Expect100Continue = false;
             customsServicePoint.ConnectionLimit = 30;
+        }
+
+        public bool ShouldDispose
+        {
+            get { return _requestCount >= 100 || (DateTime.Now - _startTime).TotalHours >= 1; }
         }
 
         public async Task<IList<IGstLookupResult>> LookupGstDataAsync(GstLookupInputType inputType, string input, bool validateInput = false)
@@ -232,6 +239,7 @@ namespace Amry.Gst
             _token = (string) response.Headers
                 .FirstOrDefault(x => x.Name == "Fast-Ver-Last")
                 .Value;
+            _requestCount++;
         }
     }
 }

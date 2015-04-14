@@ -23,10 +23,10 @@ namespace Amry.Gst
                 GstInputValidator.ValidateInput(inputType, input);
             }
 
-            var pool = _pools[inputType];
-
             GstWebScraper scraper;
-            if (!pool.TryDequeue(out scraper)) {
+            var pool = _pools[inputType];
+            while (pool.TryDequeue(out scraper) && scraper.ShouldDispose) { }
+            if (scraper == null) {
                 scraper = new GstWebScraper();
             }
 
