@@ -10,6 +10,7 @@ namespace Amry.Gst.Web
             config.Formatters.Remove(config.Formatters.XmlFormatter);
             config.Filters.Add(new CustomsGstExceptionFilterAttribute());
             config.Filters.Add(new InternalGstExceptionFilterAttribute());
+            config.Filters.Add(new UnhandledExceptionFilterAttribute());
 
             // Web API routes
             config.MapHttpAttributeRoutes();

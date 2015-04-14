@@ -153,6 +153,7 @@
     <Compile Include="App_Start\CustomsGstExceptionFilterAttribute.cs" />
     <Compile Include="App_Start\AutofacConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
+    <Compile Include="App_Start\UnhandledExceptionFilterAttribute.cs" />
     <Compile Include="App_Start\WebApiConfig.cs" />
     <Compile Include="Controllers\BizNameController.cs" />
     <Compile Include="Controllers\BizRegNoController.cs" />
