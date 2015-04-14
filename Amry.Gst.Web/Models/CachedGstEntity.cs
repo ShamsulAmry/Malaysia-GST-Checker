@@ -24,11 +24,7 @@ namespace Amry.Gst.Web.Models
         [DataMember]
         public string Status { get; set; }
 
-        [DataMember]
-        public DateTimeOffset CacheTimestamp
-        {
-            get { return Timestamp.ToOffset(TimeSpan.FromHours(8)); }
-        }
+        public string KnownErrorCode { get; set; }
 
         public bool IsLiveData
         {
@@ -84,6 +80,34 @@ namespace Amry.Gst.Web.Models
                 CommenceDate = other.CommenceDate,
                 Status = other.Status
             };
+        }
+
+        public static CachedGstEntity CreateForError(GstLookupInputType inputType, string input, KnownCustomsGstErrorCode error)
+        {
+            switch (inputType) {
+                case GstLookupInputType.GstNumber:
+                    return new CachedGstEntity {
+                        PartitionKey = PartitionKeyForGstNumber,
+                        RowKey = input,
+                        KnownErrorCode = error.ToString()
+                    };
+
+                case GstLookupInputType.BusinessRegNumber:
+                    return new CachedGstEntity {
+                        PartitionKey = PartitionKeyForBusinessRegNumber,
+                        RowKey = GetRowKeyForBusinessRegNumber(input),
+                        KnownErrorCode = error.ToString()
+                    };
+
+                case GstLookupInputType.BusinessName:
+                    return new CachedGstEntity {
+                        PartitionKey = GetPartitionKeyForBusinessNameQuery(input),
+                        RowKey = "000",
+                        KnownErrorCode = error.ToString()
+                    };
+            }
+
+            throw new NotSupportedException();
         }
     }
 }

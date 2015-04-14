@@ -193,7 +193,7 @@ namespace Amry.Gst
             }
 
             if (_dlOver100Results) {
-                throw new CustomsGstException(Resources.Over100Results);
+                throw new CustomsGstException(Resources.Over100Results, KnownCustomsGstErrorCode.Over100Results);
             }
 
             if (_diNoRegistrantsFound || !_daShowResults) {

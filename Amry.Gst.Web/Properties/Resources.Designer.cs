@@ -77,5 +77,14 @@ namespace Amry.Gst.Web.Properties {
                 return ResourceManager.GetString("InternalGstExceptionHttpResponseReasonPhrase", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Over 100 Results Returned. Please Narrow Search..
+        /// </summary>
+        internal static string Over100Results {
+            get {
+                return ResourceManager.GetString("Over100Results", resourceCulture);
+            }
+        }
     }
 }

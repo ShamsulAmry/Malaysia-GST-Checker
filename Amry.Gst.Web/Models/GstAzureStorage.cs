@@ -22,7 +22,7 @@ namespace Amry.Gst.Web.Models
         {
             var account = CloudStorageAccount.Parse(Settings.Default.AzureStorage);
             var createTasks = new List<Task>();
-            
+
             {
                 var servicePoint = ServicePointManager.FindServicePoint(account.TableEndpoint);
                 servicePoint.UseNagleAlgorithm = false;
@@ -61,53 +61,28 @@ namespace Amry.Gst.Web.Models
 
             switch (inputType) {
                 case GstLookupInputType.GstNumber: {
-                    var getOp = TableOperation.Retrieve<CachedGstEntity>(
-                        CachedGstEntity.PartitionKeyForGstNumber,
-                        CachedGstEntity.GetRowKeyForGstNumber(input));
-                    var getResult = await Table.ExecuteAsync(getOp);
-                    if (getResult.Result != null) {
-                        return new[] {(IGstLookupResult) getResult.Result};
+                    var result = await RetrieveOrLookupAsync(inputType, input);
+                    if (result == null) {
+                        return new IGstLookupResult[0];
                     }
 
-                    var lookupResults = await _dataSource.LookupGstDataAsync(inputType, input);
-                    if (lookupResults.Count == 0) {
-                        return lookupResults;
-                    }
-
-                    var cachedResult = CachedGstEntity.CreateForGstNumberQuery(lookupResults[0]);
-                    var insertOp = TableOperation.Insert(cachedResult);
-                    Table.ExecuteAsync(insertOp);
-                    return lookupResults;
+                    InsertOrReplaceAsync(CachedGstEntity.CreateForGstNumberQuery(result));
+                    return new[] {result};
                 }
 
                 case GstLookupInputType.BusinessRegNumber: {
-                    var getOp = TableOperation.Retrieve<CachedGstEntity>(
-                        CachedGstEntity.PartitionKeyForBusinessRegNumber,
-                        CachedGstEntity.GetRowKeyForBusinessRegNumber(input));
-                    var getResult = await Table.ExecuteAsync(getOp);
-                    if (getResult.Result != null) {
-                        return new[] {(IGstLookupResult) getResult.Result};
+                    var result = await RetrieveOrLookupAsync(inputType, input);
+                    if (result == null) {
+                        return new IGstLookupResult[0];
                     }
 
-                    var lookupResults = await _dataSource.LookupGstDataAsync(inputType, input);
-                    if (lookupResults.Count == 0) {
-                        return lookupResults;
-                    }
-
-                    {
-                        var cachedResult = CachedGstEntity.CreateForBusinessRegNumberQuery(lookupResults[0], input);
-                        var insertOp = TableOperation.Insert(cachedResult);
-                        Table.ExecuteAsync(insertOp);
-                    }
-                    {
-                        var cachedResult = CachedGstEntity.CreateForGstNumberQuery(lookupResults[0]);
-                        var insertOp = TableOperation.Insert(cachedResult, true);
-                        Table.ExecuteAsync(insertOp);
-                    }
-                    return lookupResults;
+                    InsertOrReplaceAsync(CachedGstEntity.CreateForBusinessRegNumberQuery(result, input));
+                    InsertOrReplaceAsync(CachedGstEntity.CreateForGstNumberQuery(result));
+                    return new[] {result};
                 }
 
                 case GstLookupInputType.BusinessName: {
+                    // Retrieve all entities of the given Partition Key.
                     var resultsQuery = Table.CreateQuery<CachedGstEntity>()
                         .Where(e => e.PartitionKey == CachedGstEntity.GetPartitionKeyForBusinessNameQuery(input));
 
@@ -118,12 +93,25 @@ namespace Amry.Gst.Web.Models
                         cachedResults.AddRange(segment.Results);
                         continuationToken = segment.ContinuationToken;
                     } while (continuationToken != null);
+
+                    // Return if there is any entity in cache.
                     if (cachedResults.Count > 0) {
                         return cachedResults;
                     }
 
-                    var lookupResults = await _dataSource.LookupGstDataAsync(inputType, input);
+                    // Lookup Customs' server and cache the results.
+                    IList<IGstLookupResult> lookupResults;
+                    try {
+                        lookupResults = await _dataSource.LookupGstDataAsync(inputType, input);
+                    } catch (CustomsGstException ex) {
+                        if (ex.KnownErrorCode == KnownCustomsGstErrorCode.Over100Results) {
+                            InsertOrReplaceAsync(CachedGstEntity.CreateForError(inputType, input, KnownCustomsGstErrorCode.Over100Results));
+                        }
+                        throw;
+                    }
+
                     if (lookupResults.Count == 0) {
+                        InsertOrReplaceAsync(CachedGstEntity.CreateForError(inputType, input, KnownCustomsGstErrorCode.NoResult));
                         return lookupResults;
                     }
 
@@ -132,6 +120,7 @@ namespace Amry.Gst.Web.Models
                         CachedGstEntity.CreateForBusinessNameQuery(result, input, i)
                     }));
 
+                    // Mark for deletion at 3 AM two days later.
                     var twoDaysLater = DateTimeOffset.UtcNow.ToOffset(TimeSpan.FromHours(8)).AddDays(2);
                     var atThreeAm = twoDaysLater.AddHours(3 - twoDaysLater.Hour);
                     var timeDiffFromNow = atThreeAm - DateTime.Now;
@@ -145,6 +134,48 @@ namespace Amry.Gst.Web.Models
 
             // Code should not be able to reach here
             throw new NotSupportedException();
+        }
+
+        async Task<IGstLookupResult> RetrieveOrLookupAsync(GstLookupInputType inputType, string input)
+        {
+            var cachedResult = await RetrieveAsync(inputType, input);
+            if (cachedResult != null) {
+                return cachedResult;
+            }
+
+            var lookupResults = await _dataSource.LookupGstDataAsync(inputType, input);
+            if (lookupResults.Count == 0) {
+                InsertOrReplaceAsync(CachedGstEntity.CreateForError(inputType, input, KnownCustomsGstErrorCode.NoResult));
+            }
+
+            return lookupResults.FirstOrDefault();
+        }
+
+        static async Task<CachedGstEntity> RetrieveAsync(GstLookupInputType inputType, string input)
+        {
+            TableOperation getOp;
+
+            switch (inputType) {
+                case GstLookupInputType.GstNumber:
+                    getOp = TableOperation.Retrieve<CachedGstEntity>(CachedGstEntity.PartitionKeyForGstNumber, CachedGstEntity.GetRowKeyForGstNumber(input));
+                    break;
+
+                case GstLookupInputType.BusinessRegNumber:
+                    getOp = TableOperation.Retrieve<CachedGstEntity>(CachedGstEntity.PartitionKeyForBusinessRegNumber, CachedGstEntity.GetRowKeyForBusinessRegNumber(input));
+                    break;
+
+                default:
+                    throw new NotSupportedException();
+            }
+
+            var getResult = await Table.ExecuteAsync(getOp);
+            return (CachedGstEntity) getResult.Result;
+        }
+
+        static Task InsertOrReplaceAsync(CachedGstEntity entity)
+        {
+            var insertOp = TableOperation.InsertOrReplace(entity);
+            return Table.ExecuteAsync(insertOp);
         }
 
         static Task BatchInsertOrReplaceAsync(IEnumerable<CachedGstEntity> entities)

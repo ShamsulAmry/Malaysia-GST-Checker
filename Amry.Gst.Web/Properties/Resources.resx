@@ -123,4 +123,7 @@
   <data name="InternalGstExceptionHttpResponseReasonPhrase" xml:space="preserve">
     <value>Cannot proceed with the query request</value>
   </data>
+  <data name="Over100Results" xml:space="preserve">
+    <value>Over 100 Results Returned. Please Narrow Search.</value>
+  </data>
 </root>
