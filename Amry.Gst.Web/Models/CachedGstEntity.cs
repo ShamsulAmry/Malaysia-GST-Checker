@@ -88,7 +88,7 @@ namespace Amry.Gst.Web.Models
                 case GstLookupInputType.GstNumber:
                     return new CachedGstEntity {
                         PartitionKey = PartitionKeyForGstNumber,
-                        RowKey = input,
+                        RowKey = GetRowKeyForGstNumber(input),
                         KnownErrorCode = error.ToString()
                     };
 

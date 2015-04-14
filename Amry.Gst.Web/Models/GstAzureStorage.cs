@@ -115,18 +115,12 @@ namespace Amry.Gst.Web.Models
                         return lookupResults;
                     }
 
-                    BatchInsertOrReplaceAsync(lookupResults.SelectMany((result, i) => new[] {
+                    var insertResults = lookupResults.SelectMany((result, i) => new[] {
                         CachedGstEntity.CreateForGstNumberQuery(result),
                         CachedGstEntity.CreateForBusinessNameQuery(result, input, i)
-                    }));
-
-                    // Mark for deletion at 3 AM two days later.
-                    var twoDaysLater = DateTimeOffset.UtcNow.ToOffset(TimeSpan.FromHours(8)).AddDays(2);
-                    var atThreeAm = twoDaysLater.AddHours(3 - twoDaysLater.Hour);
-                    var timeDiffFromNow = atThreeAm - DateTime.Now;
-                    DeletionQueue.AddMessageAsync(
-                        new CloudQueueMessage(CachedGstEntity.GetPartitionKeyForBusinessNameQuery(input) + ":" + lookupResults.Count),
-                        null, timeDiffFromNow, null, null);
+                    }).ToArray();
+                    BatchInsertOrReplaceAsync(insertResults);
+                    ScheduleDeleteAsync(insertResults.Last(), 2);
 
                     return lookupResults;
                 }
@@ -174,8 +168,16 @@ namespace Amry.Gst.Web.Models
 
         static Task InsertOrReplaceAsync(CachedGstEntity entity)
         {
+            var tasks = new List<Task>();
+
             var insertOp = TableOperation.InsertOrReplace(entity);
-            return Table.ExecuteAsync(insertOp);
+            tasks.Add(Table.ExecuteAsync(insertOp));
+
+            if (entity.KnownErrorCode != null) {
+                tasks.Add(ScheduleDeleteAsync(entity, 6));
+            }
+
+            return Task.WhenAll(tasks);
         }
 
         static Task BatchInsertOrReplaceAsync(IEnumerable<CachedGstEntity> entities)
@@ -203,6 +205,16 @@ namespace Amry.Gst.Web.Models
             }
 
             return Task.WhenAll(batchTasks);
+        }
+
+        static Task ScheduleDeleteAsync(ITableEntity entity, int dayInterval)
+        {
+            var nDaysLater = DateTimeOffset.UtcNow.ToOffset(TimeSpan.FromHours(8)).AddDays(dayInterval);
+            var atThreeAm = nDaysLater.AddHours(3 - nDaysLater.Hour);
+            var timeDiffFromNow = atThreeAm - DateTime.Now;
+            return DeletionQueue.AddMessageAsync(
+                new CloudQueueMessage(entity.PartitionKey + ":" + entity.RowKey), 
+                null, timeDiffFromNow, null, null);
         }
     }
 }
