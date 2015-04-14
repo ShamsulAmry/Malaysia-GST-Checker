@@ -120,7 +120,13 @@
   <data name="DeletingPartitionLog" xml:space="preserve">
     <value>Deleting Partition Key "{0}".</value>
   </data>
+  <data name="DeletingRowLog" xml:space="preserve">
+    <value>Deleting Partition Key "{0}", Row Key "{1}".</value>
+  </data>
   <data name="PartitionDeletedLog" xml:space="preserve">
     <value>Partition Key "{0}" deleted.</value>
+  </data>
+  <data name="RowDeletedLog" xml:space="preserve">
+    <value>Partition Key "{0}", Row Key "{1}" deleted.</value>
   </data>
 </root>

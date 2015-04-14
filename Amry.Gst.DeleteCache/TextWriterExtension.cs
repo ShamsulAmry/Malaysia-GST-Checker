@@ -12,5 +12,11 @@ namespace Amry.Gst.DeleteCache
                 DateTimeOffset.Now.ToOffset(TimeSpan.FromHours(8)).ToString("yyyy-MM-dd HH:mm:ss.fff") +
                     " " + string.Format(format, arg0));
         }
+        public static Task LogAsync(this TextWriter logger, string format, string arg0, string arg1)
+        {
+            return logger.WriteLineAsync(
+                DateTimeOffset.Now.ToOffset(TimeSpan.FromHours(8)).ToString("yyyy-MM-dd HH:mm:ss.fff") +
+                    " " + string.Format(format, arg0, arg1));
+        }
     }
 }

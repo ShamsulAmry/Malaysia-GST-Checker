@@ -70,11 +70,29 @@ namespace Amry.Gst.DeleteCache.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Deleting Partition Key &quot;{0}&quot;, Row Key &quot;{1}&quot;..
+        /// </summary>
+        internal static string DeletingRowLog {
+            get {
+                return ResourceManager.GetString("DeletingRowLog", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Partition Key &quot;{0}&quot; deleted..
         /// </summary>
         internal static string PartitionDeletedLog {
             get {
                 return ResourceManager.GetString("PartitionDeletedLog", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Partition Key &quot;{0}&quot;, Row Key &quot;{1}&quot; deleted..
+        /// </summary>
+        internal static string RowDeletedLog {
+            get {
+                return ResourceManager.GetString("RowDeletedLog", resourceCulture);
             }
         }
     }
