@@ -199,6 +199,7 @@
     <Compile Include="App_Start\WebApiConfig.cs" />
     <Compile Include="Controllers\BizNameController.cs" />
     <Compile Include="Controllers\BizRegNoController.cs" />
+    <Compile Include="Controllers\GstApiController.cs" />
     <Compile Include="Controllers\GstNoController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Global.asax.cs">

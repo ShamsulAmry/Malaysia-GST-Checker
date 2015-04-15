@@ -3,7 +3,7 @@ using Amry.Gst.Web.Models;
 
 namespace Amry.Gst.Web.Controllers
 {
-    public class BizRegNoController : ApiController
+    public class BizRegNoController : GstApiController
     {
         readonly IGstDataSource _gstDataSource;
 

@@ -1,9 +1,11 @@
-﻿using System.Web.Http;
+﻿using System.Reflection.Emit;
+using System.Web.Http;
+using System.Web.Http.Results;
 using Amry.Gst.Web.Models;
 
 namespace Amry.Gst.Web.Controllers
 {
-    public class GstNoController : ApiController
+    public class GstNoController : GstApiController
     {
         readonly IGstDataSource _gstDataSource;
 

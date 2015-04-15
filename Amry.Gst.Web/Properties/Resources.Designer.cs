@@ -95,5 +95,23 @@ namespace Amry.Gst.Web.Properties {
                 return ResourceManager.GetString("Over100Results", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Invalid input.
+        /// </summary>
+        internal static string WebApiInvalidInputReasonPhrase {
+            get {
+                return ResourceManager.GetString("WebApiInvalidInputReasonPhrase", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Search text is mandatory..
+        /// </summary>
+        internal static string WebApiSearchTextIsMandatory {
+            get {
+                return ResourceManager.GetString("WebApiSearchTextIsMandatory", resourceCulture);
+            }
+        }
     }
 }

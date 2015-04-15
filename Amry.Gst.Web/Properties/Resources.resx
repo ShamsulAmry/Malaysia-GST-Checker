@@ -129,4 +129,10 @@
   <data name="Over100Results" xml:space="preserve">
     <value>Over 100 Results Returned. Please Narrow Search.</value>
   </data>
+  <data name="WebApiInvalidInputReasonPhrase" xml:space="preserve">
+    <value>Invalid input</value>
+  </data>
+  <data name="WebApiSearchTextIsMandatory" xml:space="preserve">
+    <value>Search text is mandatory.</value>
+  </data>
 </root>
