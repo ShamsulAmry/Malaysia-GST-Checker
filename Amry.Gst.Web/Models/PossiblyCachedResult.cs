@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Globalization;
 using System.Net;
 using System.Net.Http;
 using System.Net.Http.Formatting;
@@ -55,7 +54,7 @@ namespace Amry.Gst.Web.Models
     {
         public static HttpResponseMessage WithCacheTimestamp(this HttpResponseMessage responseMsg, CachedGstEntity cachedResult)
         {
-            responseMsg.Headers.Add("X-CacheTimestamp", cachedResult.Timestamp.DateTime.ToUniversalTime().ToString(CultureInfo.InvariantCulture));
+            responseMsg.Headers.Add("X-CacheDate", cachedResult.Timestamp.DateTime.ToUniversalTime().ToString("R"));
             return responseMsg;
         }
     }
