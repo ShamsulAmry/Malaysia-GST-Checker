@@ -5,7 +5,7 @@ using Amry.Gst.Web.Properties;
 
 namespace Amry.Gst.Web
 {
-    public class WebApiExceptionFilterAttribute : ExceptionFilterAttribute
+    public class WebApiExceptionFormattingFilterAttribute : ExceptionFilterAttribute
     {
         public override void OnException(HttpActionExecutedContext context)
         {
