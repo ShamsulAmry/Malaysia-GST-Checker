@@ -50,7 +50,7 @@ namespace Amry.Gst.Web.Models
         public static CachedGstEntity CreateForGstNumberQuery(IGstLookupResult liveResult)
         {
             if (!liveResult.IsLiveData) {
-                throw new ArgumentException(Resources.CannotCacheStaleData, "liveResult");
+                throw new ArgumentException(Resources.WebApiCannotCacheStaleData, "liveResult");
             }
 
             return new CachedGstEntity {
@@ -66,7 +66,7 @@ namespace Amry.Gst.Web.Models
         public static CachedGstEntity CreateForBusinessRegNumberQuery(IGstLookupResult liveResult, string businessRegNumber)
         {
             if (!liveResult.IsLiveData) {
-                throw new ArgumentException(Resources.CannotCacheStaleData, "liveResult");
+                throw new ArgumentException(Resources.WebApiCannotCacheStaleData, "liveResult");
             }
 
             return new CachedGstEntity {
@@ -82,7 +82,7 @@ namespace Amry.Gst.Web.Models
         public static CachedGstEntity CreateForBusinessNameQuery(IGstLookupResult liveResult, string businessName, int sequence)
         {
             if (!liveResult.IsLiveData) {
-                throw new ArgumentException(Resources.CannotCacheStaleData, "liveResult");
+                throw new ArgumentException(Resources.WebApiCannotCacheStaleData, "liveResult");
             }
 
             return new CachedGstEntity {

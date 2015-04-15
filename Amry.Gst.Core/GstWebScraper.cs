@@ -88,7 +88,7 @@ namespace Amry.Gst
                 _previousResults = results;
                 return results;
             } catch (WebException ex) {
-                throw new InternalGstException(ex.Message);
+                throw new CustomsGstException(ex.Message, innerException: ex);
             } finally {
                 Interlocked.Decrement(ref _accessCount);
             }
@@ -200,7 +200,7 @@ namespace Amry.Gst
             }
 
             if (_dlOver100Results) {
-                throw new CustomsGstException(Resources.Over100Results, KnownCustomsGstErrorCode.Over100Results);
+                throw new CustomsGstException(Resources.Over100ResultsErrorMessage, KnownCustomsGstErrorCode.Over100Results);
             }
 
             if (_diNoRegistrantsFound || !_daShowResults) {

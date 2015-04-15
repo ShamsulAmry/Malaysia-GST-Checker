@@ -11,15 +11,15 @@ namespace Amry.Gst
         public static void ValidateInput(GstLookupInputType inputType, string input)
         {
             if (inputType == GstLookupInputType.GstNumber && !GstNumberRegex.IsMatch(input)) {
-                throw new InternalGstException(Resources.InvalidGstNumberValidationMessage);
+                throw new InvalidGstInputException(Resources.InvalidGstNumberValidationMessage);
             }
 
             if (inputType == GstLookupInputType.BusinessRegNumber && !BusinessRegNumberRegex.IsMatch(input)) {
-                throw new InternalGstException(Resources.InvalidBusinessRegNumberValidationMessage);
+                throw new InvalidGstInputException(Resources.InvalidBusinessRegNumberValidationMessage);
             }
 
             if (inputType == GstLookupInputType.BusinessName && input.Length <= 3) {
-                throw new InternalGstException(Resources.BusinessNameTooShortValidationMessage);
+                throw new InvalidGstInputException(Resources.BusinessNameTooShortValidationMessage);
             }
         }
     }

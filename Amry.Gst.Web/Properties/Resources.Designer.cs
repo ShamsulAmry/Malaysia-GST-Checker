@@ -63,36 +63,27 @@ namespace Amry.Gst.Web.Properties {
         /// <summary>
         ///   Looks up a localized string similar to The given data is not live and cannot be cached..
         /// </summary>
-        internal static string CannotCacheStaleData {
+        internal static string WebApiCannotCacheStaleData {
             get {
-                return ResourceManager.GetString("CannotCacheStaleData", resourceCulture);
+                return ResourceManager.GetString("WebApiCannotCacheStaleData", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to Customs&apos; server returned an error.
         /// </summary>
-        internal static string CustomsGstExceptionHttpResponseReasonPhrase {
+        internal static string WebApiCustomsGstExceptionReasonPhrase {
             get {
-                return ResourceManager.GetString("CustomsGstExceptionHttpResponseReasonPhrase", resourceCulture);
+                return ResourceManager.GetString("WebApiCustomsGstExceptionReasonPhrase", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to Cannot proceed with the query request.
         /// </summary>
-        internal static string InternalGstExceptionHttpResponseReasonPhrase {
+        internal static string WebApiInternalGstExceptionReasonPhrase {
             get {
-                return ResourceManager.GetString("InternalGstExceptionHttpResponseReasonPhrase", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Over 100 Results Returned. Please Narrow Search..
-        /// </summary>
-        internal static string Over100Results {
-            get {
-                return ResourceManager.GetString("Over100Results", resourceCulture);
+                return ResourceManager.GetString("WebApiInternalGstExceptionReasonPhrase", resourceCulture);
             }
         }
         
@@ -102,6 +93,15 @@ namespace Amry.Gst.Web.Properties {
         internal static string WebApiInvalidInputReasonPhrase {
             get {
                 return ResourceManager.GetString("WebApiInvalidInputReasonPhrase", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Over 100 Results Returned. Please Narrow Search..
+        /// </summary>
+        internal static string WebApiOver100Results {
+            get {
+                return ResourceManager.GetString("WebApiOver100Results", resourceCulture);
             }
         }
         

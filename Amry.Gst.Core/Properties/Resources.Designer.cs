@@ -90,9 +90,9 @@ namespace Amry.Gst.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Over 100 Results Returned. Please Narrow Search..
         /// </summary>
-        internal static string Over100Results {
+        internal static string Over100ResultsErrorMessage {
             get {
-                return ResourceManager.GetString("Over100Results", resourceCulture);
+                return ResourceManager.GetString("Over100ResultsErrorMessage", resourceCulture);
             }
         }
         

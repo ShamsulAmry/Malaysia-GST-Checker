@@ -117,20 +117,20 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="CannotCacheStaleData" xml:space="preserve">
+  <data name="WebApiCannotCacheStaleData" xml:space="preserve">
     <value>The given data is not live and cannot be cached.</value>
   </data>
-  <data name="CustomsGstExceptionHttpResponseReasonPhrase" xml:space="preserve">
+  <data name="WebApiCustomsGstExceptionReasonPhrase" xml:space="preserve">
     <value>Customs' server returned an error</value>
   </data>
-  <data name="InternalGstExceptionHttpResponseReasonPhrase" xml:space="preserve">
+  <data name="WebApiInternalGstExceptionReasonPhrase" xml:space="preserve">
     <value>Cannot proceed with the query request</value>
-  </data>
-  <data name="Over100Results" xml:space="preserve">
-    <value>Over 100 Results Returned. Please Narrow Search.</value>
   </data>
   <data name="WebApiInvalidInputReasonPhrase" xml:space="preserve">
     <value>Invalid input</value>
+  </data>
+  <data name="WebApiOver100Results" xml:space="preserve">
+    <value>Over 100 Results Returned. Please Narrow Search.</value>
   </data>
   <data name="WebApiSearchTextIsMandatory" xml:space="preserve">
     <value>Search text is mandatory.</value>

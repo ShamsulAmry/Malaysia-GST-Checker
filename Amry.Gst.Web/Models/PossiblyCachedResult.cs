@@ -29,24 +29,24 @@ namespace Amry.Gst.Web.Models
             }
 
             var cachedResult = results[0] as CachedGstEntity;
-            if (cachedResult != null && cachedResult.KnownErrorCode != null) {
-                if (cachedResult.KnownErrorCode == KnownCustomsGstErrorCode.NoResult.ToString()) {
-                    return new HttpResponseMessage(HttpStatusCode.NonAuthoritativeInformation) {
-                        Content = new ObjectContent<IList<IGstLookupResult>>(new IGstLookupResult[0], new JsonMediaTypeFormatter())
-                    }.WithCacheTimestamp(cachedResult);
-                }
-
-                if (cachedResult.KnownErrorCode == KnownCustomsGstErrorCode.Over100Results.ToString()) {
-                    return new HttpResponseMessage(HttpStatusCode.InternalServerError) {
-                        ReasonPhrase = Resources.CustomsGstExceptionHttpResponseReasonPhrase,
-                        Content = new StringContent(Resources.Over100Results)
-                    }.WithCacheTimestamp(cachedResult);
-                }
+            if (cachedResult == null || cachedResult.KnownErrorCode == null) {
+                return new HttpResponseMessage(HttpStatusCode.NonAuthoritativeInformation) {
+                    Content = new ObjectContent<IList<IGstLookupResult>>(results, new JsonMediaTypeFormatter())
+                }.WithCacheTimestamp(cachedResult);
+            } else if (cachedResult.KnownErrorCode == KnownCustomsGstErrorCode.NoResult.ToString()) {
+                return new HttpResponseMessage(HttpStatusCode.NonAuthoritativeInformation) {
+                    Content = new ObjectContent<IList<IGstLookupResult>>(new IGstLookupResult[0], new JsonMediaTypeFormatter())
+                }.WithCacheTimestamp(cachedResult);
+            } else if (cachedResult.KnownErrorCode == KnownCustomsGstErrorCode.Over100Results.ToString()) {
+                return new HttpResponseMessage(HttpStatusCode.Forbidden) {
+                    ReasonPhrase = Resources.WebApiCustomsGstExceptionReasonPhrase,
+                    Content = new StringContent(Resources.WebApiOver100Results)
+                }.WithCacheTimestamp(cachedResult);
+            } else {
+                return new HttpResponseMessage(HttpStatusCode.NonAuthoritativeInformation) {
+                    Content = new ObjectContent<IList<IGstLookupResult>>(results, new JsonMediaTypeFormatter())
+                }.WithCacheTimestamp(cachedResult);
             }
-
-            return new HttpResponseMessage(HttpStatusCode.NonAuthoritativeInformation) {
-                Content = new ObjectContent<IList<IGstLookupResult>>(results, new JsonMediaTypeFormatter())
-            }.WithCacheTimestamp(cachedResult);
         }
     }
 
