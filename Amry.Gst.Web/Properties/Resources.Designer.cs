@@ -61,6 +61,15 @@ namespace Amry.Gst.Web.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The given data is not live and cannot be cached..
+        /// </summary>
+        internal static string CannotCacheStaleData {
+            get {
+                return ResourceManager.GetString("CannotCacheStaleData", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Customs&apos; server returned an error.
         /// </summary>
         internal static string CustomsGstExceptionHttpResponseReasonPhrase {

@@ -66,7 +66,9 @@ namespace Amry.Gst.Web.Models
                         return new IGstLookupResult[0];
                     }
 
-                    InsertOrReplaceAsync(CachedGstEntity.CreateForGstNumberQuery(result));
+                    if (result.IsLiveData) {
+                        InsertOrReplaceAsync(CachedGstEntity.CreateForGstNumberQuery(result));
+                    }
                     return new[] {result};
                 }
 
@@ -76,8 +78,10 @@ namespace Amry.Gst.Web.Models
                         return new IGstLookupResult[0];
                     }
 
-                    InsertOrReplaceAsync(CachedGstEntity.CreateForBusinessRegNumberQuery(result, input));
-                    InsertOrReplaceAsync(CachedGstEntity.CreateForGstNumberQuery(result));
+                    if (result.IsLiveData) {
+                        InsertOrReplaceAsync(CachedGstEntity.CreateForBusinessRegNumberQuery(result, input));
+                        InsertOrReplaceAsync(CachedGstEntity.CreateForGstNumberQuery(result));
+                    }
                     return new[] {result};
                 }
 
@@ -115,12 +119,14 @@ namespace Amry.Gst.Web.Models
                         return lookupResults;
                     }
 
-                    var insertResults = lookupResults.SelectMany((result, i) => new[] {
-                        CachedGstEntity.CreateForGstNumberQuery(result),
-                        CachedGstEntity.CreateForBusinessNameQuery(result, input, i)
-                    }).ToArray();
-                    BatchInsertOrReplaceAsync(insertResults);
-                    ScheduleDeleteAsync(insertResults.Last(), 2);
+                    if (lookupResults[0].IsLiveData) {
+                        var insertResults = lookupResults.SelectMany((result, i) => new[] {
+                            CachedGstEntity.CreateForGstNumberQuery(result),
+                            CachedGstEntity.CreateForBusinessNameQuery(result, input, i)
+                        }).ToArray();
+                        BatchInsertOrReplaceAsync(insertResults);
+                        ScheduleDeleteAsync(insertResults.Last(), 2);
+                    }
 
                     return lookupResults;
                 }

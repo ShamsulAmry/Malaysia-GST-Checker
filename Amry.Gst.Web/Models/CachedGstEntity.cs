@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.Runtime.Serialization;
+using Amry.Gst.Web.Properties;
 using Microsoft.WindowsAzure.Storage.Table;
 
 namespace Amry.Gst.Web.Models
@@ -46,39 +47,51 @@ namespace Amry.Gst.Web.Models
             return PartitionKeyPrefixForBusinessNameQuery + businessNameQuery.ToUpperInvariant().Replace(' ', '_');
         }
 
-        public static CachedGstEntity CreateForGstNumberQuery(IGstLookupResult other)
+        public static CachedGstEntity CreateForGstNumberQuery(IGstLookupResult liveResult)
         {
+            if (!liveResult.IsLiveData) {
+                throw new ArgumentException(Resources.CannotCacheStaleData, "liveResult");
+            }
+
             return new CachedGstEntity {
                 PartitionKey = PartitionKeyForGstNumber,
-                RowKey = GetRowKeyForGstNumber(other.GstNumber),
-                GstNumber = other.GstNumber,
-                BusinessName = other.BusinessName,
-                CommenceDate = other.CommenceDate,
-                Status = other.Status
+                RowKey = GetRowKeyForGstNumber(liveResult.GstNumber),
+                GstNumber = liveResult.GstNumber,
+                BusinessName = liveResult.BusinessName,
+                CommenceDate = liveResult.CommenceDate,
+                Status = liveResult.Status
             };
         }
 
-        public static CachedGstEntity CreateForBusinessRegNumberQuery(IGstLookupResult other, string businessRegNumber)
+        public static CachedGstEntity CreateForBusinessRegNumberQuery(IGstLookupResult liveResult, string businessRegNumber)
         {
+            if (!liveResult.IsLiveData) {
+                throw new ArgumentException(Resources.CannotCacheStaleData, "liveResult");
+            }
+
             return new CachedGstEntity {
                 PartitionKey = PartitionKeyForBusinessRegNumber,
                 RowKey = GetRowKeyForBusinessRegNumber(businessRegNumber),
-                GstNumber = other.GstNumber,
-                BusinessName = other.BusinessName,
-                CommenceDate = other.CommenceDate,
-                Status = other.Status
+                GstNumber = liveResult.GstNumber,
+                BusinessName = liveResult.BusinessName,
+                CommenceDate = liveResult.CommenceDate,
+                Status = liveResult.Status
             };
         }
 
-        public static CachedGstEntity CreateForBusinessNameQuery(IGstLookupResult other, string businessName, int sequence)
+        public static CachedGstEntity CreateForBusinessNameQuery(IGstLookupResult liveResult, string businessName, int sequence)
         {
+            if (!liveResult.IsLiveData) {
+                throw new ArgumentException(Resources.CannotCacheStaleData, "liveResult");
+            }
+
             return new CachedGstEntity {
                 PartitionKey = GetPartitionKeyForBusinessNameQuery(businessName),
                 RowKey = sequence.ToString("000"),
-                GstNumber = other.GstNumber,
-                BusinessName = other.BusinessName,
-                CommenceDate = other.CommenceDate,
-                Status = other.Status
+                GstNumber = liveResult.GstNumber,
+                BusinessName = liveResult.BusinessName,
+                CommenceDate = liveResult.CommenceDate,
+                Status = liveResult.Status
             };
         }
 
