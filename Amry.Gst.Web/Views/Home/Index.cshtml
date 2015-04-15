@@ -45,7 +45,7 @@
                 <div class="col-md-offset-0 col-md-3 col-sm-offset-0 col-sm-4 col-xs-offset-1 col-xs-10">
                     <div class="form-group">
                         <label for="search-input">Search For</label>
-                        <input type="text" class="form-control" ng-model="searchText" required="required" />
+                        <input type="text" class="form-control" ng-model="searchText" required="required" pattern="[\w\- ]+" />
                     </div>
                     <button type="submit" class="btn btn-primary">Lookup GST Status</button>
                 </div>
