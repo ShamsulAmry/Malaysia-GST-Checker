@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+using System;
+using System.Collections.Generic;
 using System.Net;
 using System.Net.Http;
 using System.Net.Http.Formatting;
@@ -9,27 +10,48 @@ using Amry.Gst.Web.Properties;
 
 namespace Amry.Gst.Web.Models
 {
-    class PossiblyCachedResult : IHttpActionResult
+    class PossiblyCachedAndMayReturnErrorStatusResult : IHttpActionResult
     {
         readonly Task<IList<IGstLookupResult>> _resultsTask;
 
-        public PossiblyCachedResult(Task<IList<IGstLookupResult>> resultsTask)
+        public PossiblyCachedAndMayReturnErrorStatusResult(Task<IList<IGstLookupResult>> resultsTask)
         {
             _resultsTask = resultsTask;
         }
 
         public async Task<HttpResponseMessage> ExecuteAsync(CancellationToken cancellationToken)
         {
-            var results = await _resultsTask;
+            // Check for search error status thrown as exceptions.
+            IList<IGstLookupResult> results;
+            try {
+                results = await _resultsTask;
+            } catch (CustomsGstException ex) {
+                if (ex.KnownErrorCode == KnownCustomsGstErrorCode.Over100Results) {
+                    return new HttpResponseMessage(HttpStatusCode.Forbidden) {
+                        ReasonPhrase = Resources.WebApiCustomsGstExceptionReasonPhrase,
+                        Content = new StringContent(Resources.WebApiOver100Results)
+                    };
+                }
+                throw;
+            } catch (InvalidGstInputException ex) {
+                return new HttpResponseMessage(HttpStatusCode.BadRequest) {
+                    ReasonPhrase = Resources.WebApiInvalidInputReasonPhrase,
+                    Content = new StringContent(ex.Message)
+                };
+            }
 
+            // Return live data.
             if (results.Count == 0 || results[0].IsLiveData) {
                 return new HttpResponseMessage(HttpStatusCode.OK) {
                     Content = new ObjectContent<IList<IGstLookupResult>>(results, new JsonMediaTypeFormatter())
                 };
             }
 
+            // Return cached data or search error status.
             var cachedResult = results[0] as CachedGstEntity;
             if (cachedResult == null || cachedResult.KnownErrorCode == null) {
+                // If not IsLiveData but it's not a CachedGstEntity,
+                // or if it's a CachedGstEntity but with no KnownErrorCode,
                 return new HttpResponseMessage(HttpStatusCode.NonAuthoritativeInformation) {
                     Content = new ObjectContent<IList<IGstLookupResult>>(results, new JsonMediaTypeFormatter())
                 }.WithCacheTimestamp(cachedResult);
@@ -42,12 +64,20 @@ namespace Amry.Gst.Web.Models
                     ReasonPhrase = Resources.WebApiCustomsGstExceptionReasonPhrase,
                     Content = new StringContent(Resources.WebApiOver100Results)
                 }.WithCacheTimestamp(cachedResult);
-            } else {
-                return new HttpResponseMessage(HttpStatusCode.NonAuthoritativeInformation) {
-                    Content = new ObjectContent<IList<IGstLookupResult>>(results, new JsonMediaTypeFormatter())
-                }.WithCacheTimestamp(cachedResult);
             }
+
+            throw new InvalidGstResultsException(results);
         }
+    }
+
+    class InvalidGstResultsException : Exception
+    {
+        public InvalidGstResultsException(IList<IGstLookupResult> results)
+        {
+            Results = results;
+        }
+
+        public IList<IGstLookupResult> Results { get; private set; }
     }
 
     static class HttpResponseMessageExtension

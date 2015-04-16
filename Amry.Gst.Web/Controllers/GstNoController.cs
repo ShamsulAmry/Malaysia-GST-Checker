@@ -1,6 +1,4 @@
-﻿using System.Reflection.Emit;
-using System.Web.Http;
-using System.Web.Http.Results;
+﻿using System.Web.Http;
 using Amry.Gst.Web.Models;
 
 namespace Amry.Gst.Web.Controllers
@@ -16,7 +14,7 @@ namespace Amry.Gst.Web.Controllers
 
         public IHttpActionResult Get(string id)
         {
-            return new PossiblyCachedResult(_gstDataSource.LookupGstDataAsync(
+            return new PossiblyCachedAndMayReturnErrorStatusResult(_gstDataSource.LookupGstDataAsync(
                 GstLookupInputType.GstNumber, id, true));
         }
     }
