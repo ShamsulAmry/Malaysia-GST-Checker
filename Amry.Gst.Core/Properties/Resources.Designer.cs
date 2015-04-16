@@ -88,6 +88,15 @@ namespace Amry.Gst.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The Customs&apos; server did not return expected token.
+        /// </summary>
+        internal static string NoTokenReturnedErrorMessage {
+            get {
+                return ResourceManager.GetString("NoTokenReturnedErrorMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Over 100 Results Returned. Please Narrow Search..
         /// </summary>
         internal static string Over100ResultsErrorMessage {

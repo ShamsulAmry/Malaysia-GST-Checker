@@ -23,6 +23,7 @@ namespace Amry.Gst
         };
 
         int _requestCount;
+        bool _forceShouldDispose;
         Tuple<GstLookupInputType, string> _previousInput;
         IList<IGstLookupResult> _previousResults;
         int _accessCount;
@@ -43,7 +44,7 @@ namespace Amry.Gst
 
         public bool ShouldDispose
         {
-            get { return _requestCount >= 100 || (DateTime.Now - _startTime).TotalHours >= 1; }
+            get { return _forceShouldDispose || _requestCount >= 100 || (DateTime.Now - _startTime).TotalHours >= 1; }
         }
 
         public async Task<IList<IGstLookupResult>> LookupGstDataAsync(GstLookupInputType inputType, string input, bool validateInput = false)
@@ -236,9 +237,13 @@ namespace Amry.Gst
 
         void UpdateTokenForNextRequest(IRestResponse response)
         {
-            _token = (string) response.Headers
-                .FirstOrDefault(x => x.Name == "Fast-Ver-Last")
-                .Value;
+            var tokenHeader = response.Headers.FirstOrDefault(x => x.Name == "Fast-Ver-Last");
+            if (tokenHeader == null) {
+                _forceShouldDispose = true;
+                throw new MissingCustomsTokenException(_startTime, _requestCount, response);
+            }
+
+            _token = (string) tokenHeader.Value;
             _requestCount++;
         }
     }

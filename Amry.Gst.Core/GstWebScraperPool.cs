@@ -33,7 +33,9 @@ namespace Amry.Gst
             try {
                 return await scraper.LookupGstDataAsync(inputType, input);
             } finally {
-                pool.Enqueue(scraper);
+                if (!scraper.ShouldDispose) {
+                    pool.Enqueue(scraper);
+                }
             }
         }
     }
