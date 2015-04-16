@@ -8,7 +8,7 @@ namespace Amry.Gst
 {
     public class MissingCustomsTokenException : Exception
     {
-        public MissingCustomsTokenException(DateTime sessionStartTime, int requestCountBeforeError, string requestLog, IRestResponse response)
+        public MissingCustomsTokenException(DateTime sessionStartTime, DateTime lastRequestTime, int requestCountBeforeError, string requestLog, IRestResponse response)
             : base(Resources.NoTokenReturnedErrorMessage)
         {
             SessionStartTime = sessionStartTime;
@@ -16,6 +16,7 @@ namespace Amry.Gst
 
             ResponseDetails = new Dictionary<string, string> {
                 {"LiveSpan", (DateTime.Now - sessionStartTime).ToString()}, 
+                {"IdleSpan", (DateTime.Now - lastRequestTime).ToString()},
                 {"SessionStartTime", sessionStartTime.ToString("R")}, 
                 {"RequestCountBeforeError", requestCountBeforeError.ToString(CultureInfo.InvariantCulture)}, 
                 {"RequestLog", requestLog}, {"Content", response.Content}

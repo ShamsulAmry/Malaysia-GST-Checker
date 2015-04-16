@@ -24,6 +24,7 @@ namespace Amry.Gst
         };
         readonly StringBuilder _requestLogBuilder = new StringBuilder();
 
+        DateTime _lastRequestTime = DateTime.Now;
         int _requestCount;
         bool _forceShouldDispose;
         Tuple<GstLookupInputType, string> _previousInput;
@@ -46,7 +47,7 @@ namespace Amry.Gst
 
         public bool ShouldDispose
         {
-            get { return _forceShouldDispose || _requestCount >= 100 || (DateTime.Now - _startTime).TotalHours >= 1; }
+            get { return _forceShouldDispose || _requestCount >= 100 || (DateTime.Now - _lastRequestTime).TotalMinutes >= 20; }
         }
 
         public async Task<IList<IGstLookupResult>> LookupGstDataAsync(GstLookupInputType inputType, string input, bool validateInput = false)
@@ -239,15 +240,17 @@ namespace Amry.Gst
 
         void UpdateTokenForNextRequest(IRestResponse response)
         {
-            _requestLogBuilder.AppendFormat("{0}: {1}", _requestCount, DateTime.Now - _startTime).AppendLine();
+            _requestLogBuilder.AppendFormat("{0}: {1}. ", _requestCount, DateTime.Now - _lastRequestTime);
 
             var tokenHeader = response.Headers.FirstOrDefault(x => x.Name == "Fast-Ver-Last");
             if (tokenHeader == null) {
                 _forceShouldDispose = true;
-                throw new MissingCustomsTokenException(_startTime, _requestCount, _requestLogBuilder.ToString(), response);
+                throw new MissingCustomsTokenException(_startTime, _lastRequestTime, 
+                    _requestCount, _requestLogBuilder.ToString(), response);
             }
 
             _token = (string) tokenHeader.Value;
+            _lastRequestTime = DateTime.Now;
             _requestCount++;
         }
     }
