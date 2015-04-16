@@ -9,9 +9,11 @@ namespace Amry.Gst.Web.Models
     [DataContract]
     class CachedGstEntity : TableEntity, IGstLookupResult
     {
-        public const string PartitionKeyForGstNumber = "GST";
-        public const string PartitionKeyForBusinessRegNumber = "REG";
-        public const string PartitionKeyPrefixForBusinessNameQuery = "NAME:";
+        const string PartitionKeyPrefixForGstNumber = "GST:";
+        const string PartitionKeyPrefixForBusinessRegNumber = "REG:";
+        const string PartitionKeyPrefixForBusinessNameQuery = "NAME:";
+
+        public string KnownErrorCode { get; set; }
 
         [DataMember]
         public string GstNumber { get; set; }
@@ -25,68 +27,38 @@ namespace Amry.Gst.Web.Models
         [DataMember]
         public string Status { get; set; }
 
-        public string KnownErrorCode { get; set; }
-
         public bool IsLiveData
         {
             get { return false; }
         }
 
-        public static string GetRowKeyForGstNumber(string gstNumber)
+        public static string GetPartitionKey(GstLookupInputType inputType, string input)
         {
-            return gstNumber;
+            switch (inputType) {
+                case GstLookupInputType.GstNumber:
+                    return PartitionKeyPrefixForGstNumber + input;
+
+                case GstLookupInputType.BusinessRegNumber:
+                    return PartitionKeyPrefixForBusinessRegNumber + new string(
+                        input.Where(char.IsLetterOrDigit).Select(char.ToUpperInvariant).ToArray());
+
+                case GstLookupInputType.BusinessName:
+                    return PartitionKeyPrefixForBusinessNameQuery +
+                        input.ToUpperInvariant().Replace(' ', '_');
+
+                default:
+                    throw new NotSupportedException();
+            }
         }
 
-        public static string GetRowKeyForBusinessRegNumber(string businessRegNumber)
-        {
-            return new string(businessRegNumber.Where(char.IsLetterOrDigit).Select(char.ToUpperInvariant).ToArray());
-        }
-
-        public static string GetPartitionKeyForBusinessNameQuery(string businessNameQuery)
-        {
-            return PartitionKeyPrefixForBusinessNameQuery + businessNameQuery.ToUpperInvariant().Replace(' ', '_');
-        }
-
-        public static CachedGstEntity CreateForGstNumberQuery(IGstLookupResult liveResult)
+        public static CachedGstEntity CreateForResult(GstLookupInputType inputType, string input, IGstLookupResult liveResult, int sequence)
         {
             if (!liveResult.IsLiveData) {
                 throw new ArgumentException(Resources.WebApiCannotCacheStaleData, "liveResult");
             }
 
             return new CachedGstEntity {
-                PartitionKey = PartitionKeyForGstNumber,
-                RowKey = GetRowKeyForGstNumber(liveResult.GstNumber),
-                GstNumber = liveResult.GstNumber,
-                BusinessName = liveResult.BusinessName,
-                CommenceDate = liveResult.CommenceDate,
-                Status = liveResult.Status
-            };
-        }
-
-        public static CachedGstEntity CreateForBusinessRegNumberQuery(IGstLookupResult liveResult, string businessRegNumber)
-        {
-            if (!liveResult.IsLiveData) {
-                throw new ArgumentException(Resources.WebApiCannotCacheStaleData, "liveResult");
-            }
-
-            return new CachedGstEntity {
-                PartitionKey = PartitionKeyForBusinessRegNumber,
-                RowKey = GetRowKeyForBusinessRegNumber(businessRegNumber),
-                GstNumber = liveResult.GstNumber,
-                BusinessName = liveResult.BusinessName,
-                CommenceDate = liveResult.CommenceDate,
-                Status = liveResult.Status
-            };
-        }
-
-        public static CachedGstEntity CreateForBusinessNameQuery(IGstLookupResult liveResult, string businessName, int sequence)
-        {
-            if (!liveResult.IsLiveData) {
-                throw new ArgumentException(Resources.WebApiCannotCacheStaleData, "liveResult");
-            }
-
-            return new CachedGstEntity {
-                PartitionKey = GetPartitionKeyForBusinessNameQuery(businessName),
+                PartitionKey = GetPartitionKey(inputType, input),
                 RowKey = sequence.ToString("000"),
                 GstNumber = liveResult.GstNumber,
                 BusinessName = liveResult.BusinessName,
@@ -97,30 +69,11 @@ namespace Amry.Gst.Web.Models
 
         public static CachedGstEntity CreateForError(GstLookupInputType inputType, string input, KnownCustomsGstErrorCode error)
         {
-            switch (inputType) {
-                case GstLookupInputType.GstNumber:
-                    return new CachedGstEntity {
-                        PartitionKey = PartitionKeyForGstNumber,
-                        RowKey = GetRowKeyForGstNumber(input),
-                        KnownErrorCode = error.ToString()
-                    };
-
-                case GstLookupInputType.BusinessRegNumber:
-                    return new CachedGstEntity {
-                        PartitionKey = PartitionKeyForBusinessRegNumber,
-                        RowKey = GetRowKeyForBusinessRegNumber(input),
-                        KnownErrorCode = error.ToString()
-                    };
-
-                case GstLookupInputType.BusinessName:
-                    return new CachedGstEntity {
-                        PartitionKey = GetPartitionKeyForBusinessNameQuery(input),
-                        RowKey = "000",
-                        KnownErrorCode = error.ToString()
-                    };
-            }
-
-            throw new NotSupportedException();
+            return new CachedGstEntity {
+                PartitionKey = GetPartitionKey(inputType, input),
+                RowKey = "000",
+                KnownErrorCode = error.ToString()
+            };
         }
     }
 }
