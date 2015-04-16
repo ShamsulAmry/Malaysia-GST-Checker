@@ -4,6 +4,7 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Net;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Amry.Gst.Properties;
@@ -21,6 +22,7 @@ namespace Amry.Gst
         readonly RestClient _client = new RestClient(CustomsEndpoint) {
             CookieContainer = new CookieContainer()
         };
+        readonly StringBuilder _requestLogBuilder = new StringBuilder();
 
         int _requestCount;
         bool _forceShouldDispose;
@@ -237,10 +239,12 @@ namespace Amry.Gst
 
         void UpdateTokenForNextRequest(IRestResponse response)
         {
+            _requestLogBuilder.AppendFormat("{0}: {1}", _requestCount, DateTime.Now - _startTime).AppendLine();
+
             var tokenHeader = response.Headers.FirstOrDefault(x => x.Name == "Fast-Ver-Last");
             if (tokenHeader == null) {
                 _forceShouldDispose = true;
-                throw new MissingCustomsTokenException(_startTime, _requestCount, response);
+                throw new MissingCustomsTokenException(_startTime, _requestCount, _requestLogBuilder.ToString(), response);
             }
 
             _token = (string) tokenHeader.Value;

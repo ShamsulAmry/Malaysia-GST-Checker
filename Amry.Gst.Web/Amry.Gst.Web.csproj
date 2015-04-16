@@ -67,7 +67,7 @@
       <Private>True</Private>
     </Reference>
     <Reference Include="NewRelic.Api.Agent, Version=4.2.185.0, Culture=neutral, PublicKeyToken=06552fced0b33d87, processorArchitecture=MSIL">
-      <HintPath>..\packages\NewRelic.Azure.WebSites.4.2.185.0\lib\NewRelic.Api.Agent.dll</HintPath>
+      <HintPath>..\packages\NewRelic.Agent.Api.4.2.185.0\lib\NewRelic.Api.Agent.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="Newtonsoft.Json">
@@ -194,6 +194,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="App_Start\AutofacConfig.cs" />
+    <Compile Include="App_Start\RecordMissingCustomsTokenExceptionInNewRelicAttribute.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\WebApiExceptionFormattingFilterAttribute.cs" />
     <Compile Include="App_Start\WebApiConfig.cs" />

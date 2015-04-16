@@ -10,6 +10,7 @@ namespace Amry.Gst.Web
         {
             // Web API configuration and services
             config.Formatters.Remove(config.Formatters.XmlFormatter);
+            config.Filters.Add(new RecordMissingCustomsTokenExceptionInNewRelicAttribute());
             config.Filters.Add(new WebApiExceptionFormattingFilterAttribute());
             config.MessageHandlers.Insert(0, new ServerCompressionHandler(
                 new GZipCompressor(), new DeflateCompressor()));
