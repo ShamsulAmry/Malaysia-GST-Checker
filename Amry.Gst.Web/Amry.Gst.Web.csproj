@@ -201,6 +201,9 @@
     <Content Include="Web.config" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\Amry.Gst.Core\Properties\AssemblyInfoConstants.cs">
+      <Link>Properties\AssemblyInfoConstants.cs</Link>
+    </Compile>
     <Compile Include="App_Start\AutofacConfig.cs" />
     <Compile Include="App_Start\RecordMissingCustomsTokenExceptionInNewRelicAttribute.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />

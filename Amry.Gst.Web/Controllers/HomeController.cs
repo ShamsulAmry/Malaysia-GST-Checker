@@ -1,4 +1,5 @@
 ﻿using System.Web.Mvc;
+using Amry.Gst.Properties;
 
 namespace Amry.Gst.Web.Controllers
 {
@@ -20,6 +21,12 @@ namespace Amry.Gst.Web.Controllers
         public ActionResult Api()
         {
             return View();
+        }
+
+        [Route("ver")]
+        public ActionResult Version()
+        {
+            return Content(AssemblyInfoConstants.Version, "text/plain");
         }
     }
 }

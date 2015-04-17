@@ -51,6 +51,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Properties\AssemblyInfoConstants.cs" />
     <Compile Include="CustomsGstException.cs" />
     <Compile Include="GstInputValidator.cs" />
     <Compile Include="GstJsonResult.cs" />
