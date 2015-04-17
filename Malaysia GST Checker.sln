@@ -9,6 +9,11 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Amry.Gst.Web", "Amry.Gst.We
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Amry.Gst.DeleteCache", "Amry.Gst.DeleteCache\Amry.Gst.DeleteCache.csproj", "{BE74EAD7-4E5A-4999-BEDA-0222305E79D5}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{D9E1B88B-FB01-4B01-A915-73803CD006CB}"
+	ProjectSection(SolutionItems) = preProject
+		LICENSE.txt = LICENSE.txt
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		AzureRelease|Any CPU = AzureRelease|Any CPU
