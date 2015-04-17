@@ -85,14 +85,18 @@ namespace Amry.Gst.Web.Models
                 lookupResults = await _dataSource.LookupGstDataAsync(inputType, input);
             } catch (CustomsGstException ex) {
                 if (ex.KnownErrorCode == KnownCustomsGstErrorCode.Over100Results) {
+#pragma warning disable 4014
                     InsertAsync(CachedGstEntity.CreateForError(
+#pragma warning restore 4014
                         inputType, input, KnownCustomsGstErrorCode.Over100Results));
                 }
                 throw;
             }
 
             if (lookupResults.Count == 0) {
+#pragma warning disable 4014
                 InsertAndScheduleDeleteAsync(CachedGstEntity.CreateForError(
+#pragma warning restore 4014
                     inputType, input, KnownCustomsGstErrorCode.NoResult), 6);
                 return lookupResults;
             }
@@ -105,11 +109,15 @@ namespace Amry.Gst.Web.Models
                     lastCachedResult = CachedGstEntity.CreateForResult(inputType, input, lookupResults[i], i);
                     batchOp.InsertOrReplace(lastCachedResult);
                 }
+#pragma warning disable 4014
                 Table.ExecuteBatchAsync(batchOp);
+#pragma warning restore 4014
 
                 if (inputType == GstLookupInputType.BusinessName) {
                     Debug.Assert(lastCachedResult != null, "cacheResult shouldn't be null here");
+#pragma warning disable 4014
                     ScheduleDeleteAsync(lastCachedResult, 6);
+#pragma warning restore 4014
                 }
             }
 

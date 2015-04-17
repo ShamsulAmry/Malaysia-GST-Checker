@@ -48,7 +48,9 @@ namespace Amry.Gst.DeleteCache
             var partitionKey = keyInfo.Substring(0, separatorIndex);
             var lastRowIndex = Convert.ToInt32(keyInfo.Substring(separatorIndex + 1));
 
+#pragma warning disable 4014
             logger.LogAsync(Resources.DeletingPartitionLog, partitionKey);
+#pragma warning restore 4014
 
             if (lastRowIndex == 0) {
                 var deleteOp = TableOperation.Delete(new TableEntity(partitionKey, "000") {ETag = "*"});
@@ -73,7 +75,9 @@ namespace Amry.Gst.DeleteCache
                 await Task.WhenAll(batchTasks);
             }
 
+#pragma warning disable 4014
             logger.LogAsync(Resources.PartitionDeletedLog, partitionKey);
+#pragma warning restore 4014
         }
     }
 }
