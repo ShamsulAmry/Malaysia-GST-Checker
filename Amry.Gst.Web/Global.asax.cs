@@ -12,6 +12,7 @@ namespace Amry.Gst.Web
         void Application_Start(object sender, EventArgs e)
         {
             // Code that runs on application startup
+            MvcHandler.DisableMvcResponseHeader = true;
             AreaRegistration.RegisterAllAreas();
             GlobalFilters.Filters.Add(new MinifyHtmlAttribute());
             GlobalConfiguration.Configure(WebApiConfig.Register);
