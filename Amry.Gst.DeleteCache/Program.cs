@@ -37,31 +37,12 @@ namespace Amry.Gst.DeleteCache
             CancellationToken cancellationToken,
             TextWriter logger)
         {
-            Task task = null;
-
-            if (keyInfo.StartsWith("GST:") || keyInfo.StartsWith("REG:")) {
-                task = DeleteErrorCache(keyInfo, table, cancellationToken, logger);
-            } else {
-                task = DeleteBusinessNameQueryCache(keyInfo, table, cancellationToken, logger);
-            }
-
+            var task = DeleteCache(keyInfo, table, cancellationToken, logger);
             Tasks.Add(task);
             return task;
         }
 
-        static async Task DeleteErrorCache(string keyInfo, CloudTable table, CancellationToken cancellationToken, TextWriter logger)
-        {
-            var keyParts = keyInfo.Split(':');
-            var partitionKey = keyParts[0];
-            var rowKey = keyParts[1];
-
-            logger.LogAsync(Resources.DeletingRowLog, partitionKey, rowKey);
-            var deleteOp = TableOperation.Delete(new TableEntity(partitionKey, rowKey) {ETag = "*"});
-            await table.ExecuteAsync(deleteOp, cancellationToken);
-            logger.LogAsync(Resources.RowDeletedLog, partitionKey, rowKey);
-        }
-
-        static async Task DeleteBusinessNameQueryCache(string keyInfo, CloudTable table, CancellationToken cancellationToken, TextWriter logger)
+        static async Task DeleteCache(string keyInfo, CloudTable table, CancellationToken cancellationToken, TextWriter logger)
         {
             var separatorIndex = keyInfo.LastIndexOf(':');
             var partitionKey = keyInfo.Substring(0, separatorIndex);
