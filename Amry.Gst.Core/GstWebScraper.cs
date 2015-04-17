@@ -47,7 +47,7 @@ namespace Amry.Gst
 
         public bool ShouldDispose
         {
-            get { return _forceShouldDispose || _requestCount >= 100 || (DateTime.Now - _lastRequestTime).TotalMinutes >= 20; }
+            get { return _forceShouldDispose || _requestCount >= 100 || (DateTime.Now - _lastRequestTime).TotalMinutes >= 15; }
         }
 
         public async Task<IList<IGstLookupResult>> LookupGstDataAsync(GstLookupInputType inputType, string input, bool validateInput = false)
