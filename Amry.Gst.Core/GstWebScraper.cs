@@ -20,6 +20,8 @@ namespace Amry.Gst
 
         readonly DateTime _startTime = DateTime.Now;
         readonly RestClient _client = new RestClient(CustomsEndpoint) {
+            // IMPORTANT: The CookieContainer here will keep track of the latest cookies from the server 
+            // and send them back on subsequent requests per RestClient instance.
             CookieContainer = new CookieContainer()
         };
         readonly StringBuilder _requestLogBuilder = new StringBuilder();
@@ -47,6 +49,8 @@ namespace Amry.Gst
 
         public bool ShouldDispose
         {
+            // Tweak parameters here for rules of when to dispose a scraper session.
+            // Still trying to figure out what rule does the Customs use to expire their token sessions.
             get { return _forceShouldDispose || _requestCount >= 100 || (DateTime.Now - _lastRequestTime).TotalMinutes >= 15; }
         }
 
@@ -211,6 +215,8 @@ namespace Amry.Gst
                 return new IGstLookupResult[0];
             }
 
+            // In theory, if "d-a" is set to visible, there should be a table output.
+            // I'm leaving the table checking code below in place, just in case.
             // If there is no previous result returned by the Customs' server 
             // and current result is also empty, they will not return any table output.
             var resultField = jsonResult.Updates.FieldUpdates.FirstOrDefault(update => update.Field == "d-f");
@@ -223,6 +229,7 @@ namespace Amry.Gst
             var htmlDoc = new HtmlDocument();
             htmlDoc.LoadHtml(htmlStr);
 
+            // One TR has four TDs. Process the TDs in group of fours.
             var cellTexts = htmlDoc.DocumentNode
                 .SelectNodes("//tbody/tr/td")
                 .Select(x => x.InnerText)
