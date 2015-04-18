@@ -120,6 +120,9 @@
   <data name="BusinessNameTooShortValidationMessage" xml:space="preserve">
     <value>Business Name query must be more than 3 characters</value>
   </data>
+  <data name="CustomsServerStatusCode400" xml:space="preserve">
+    <value>The Customs' server is having a problem at the moment. Please try again later.</value>
+  </data>
   <data name="InvalidBusinessRegNumberValidationMessage" xml:space="preserve">
     <value>Business Registration Number should only consist of digits, letters or dashes</value>
   </data>

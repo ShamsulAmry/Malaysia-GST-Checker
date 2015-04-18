@@ -247,6 +247,10 @@ namespace Amry.Gst
 
         void UpdateTokenForNextRequest(IRestResponse response)
         {
+            if (response.StatusCode == HttpStatusCode.BadRequest) {
+                throw new CustomsGstException(Resources.CustomsServerStatusCode400, KnownCustomsGstErrorCode.StatusCode400);
+            }
+
             _requestLogBuilder.AppendFormat("{0}: {1}. ", _requestCount, DateTime.Now - _lastRequestTime);
 
             var tokenHeader = response.Headers.FirstOrDefault(x => x.Name == "Fast-Ver-Last");

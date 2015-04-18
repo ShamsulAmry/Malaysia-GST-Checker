@@ -70,6 +70,15 @@ namespace Amry.Gst.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The Customs&apos; server is having a problem at the moment. Please try again later..
+        /// </summary>
+        internal static string CustomsServerStatusCode400 {
+            get {
+                return ResourceManager.GetString("CustomsServerStatusCode400", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Business Registration Number should only consist of digits, letters or dashes.
         /// </summary>
         internal static string InvalidBusinessRegNumberValidationMessage {
