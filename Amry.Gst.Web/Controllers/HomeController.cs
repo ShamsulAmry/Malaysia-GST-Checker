@@ -1,23 +1,24 @@
 ﻿using System.Web.Mvc;
 using Amry.Gst.Properties;
+using WebMarkupMin.Mvc.ActionFilters;
 
 namespace Amry.Gst.Web.Controllers
 {
     public class HomeController : Controller
     {
-        [Route]
+        [Route, MinifyHtml]
         public ActionResult Index()
         {
             return View();
         }
 
-        [Route("about")]
+        [Route("about"), MinifyHtml]
         public ActionResult About()
         {
             return View();
         }
 
-        [Route("api")]
+        [Route("api"), MinifyHtml]
         public ActionResult Api()
         {
             return View();
