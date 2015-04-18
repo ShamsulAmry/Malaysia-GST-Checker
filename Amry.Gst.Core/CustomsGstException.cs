@@ -18,6 +18,7 @@ namespace Amry.Gst
     public enum KnownCustomsGstErrorCode
     {
         NoResult,
-        Over100Results
+        Over100Results,
+        StatusCode400
     }
 }

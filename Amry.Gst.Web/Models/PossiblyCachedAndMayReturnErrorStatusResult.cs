@@ -26,12 +26,20 @@ namespace Amry.Gst.Web.Models
             try {
                 results = await _resultsTask;
             } catch (CustomsGstException ex) {
-                if (ex.KnownErrorCode == KnownCustomsGstErrorCode.Over100Results) {
-                    return new HttpResponseMessage(HttpStatusCode.Forbidden) {
-                        ReasonPhrase = Resources.WebApiCustomsGstExceptionReasonPhrase,
-                        Content = new StringContent(Resources.WebApiOver100Results)
-                    };
+                switch (ex.KnownErrorCode) {
+                    case KnownCustomsGstErrorCode.Over100Results:
+                        return new HttpResponseMessage(HttpStatusCode.Forbidden) {
+                            ReasonPhrase = Resources.WebApiCustomsGstExceptionReasonPhrase,
+                            Content = new StringContent(Resources.WebApiOver100Results)
+                        };
+
+                    case KnownCustomsGstErrorCode.StatusCode400:
+                        return new HttpResponseMessage(HttpStatusCode.BadGateway) {
+                            ReasonPhrase = Resources.WebApiCustomsGstExceptionReasonPhrase,
+                            Content = new StringContent(ex.Message)
+                        };
                 }
+
                 throw;
             } catch (InvalidGstInputException ex) {
                 return new HttpResponseMessage(HttpStatusCode.BadRequest) {
@@ -55,11 +63,13 @@ namespace Amry.Gst.Web.Models
                 return new HttpResponseMessage(HttpStatusCode.NonAuthoritativeInformation) {
                     Content = new ObjectContent<IList<IGstLookupResult>>(results, new JsonMediaTypeFormatter())
                 }.WithCacheTimestamp(cachedResult);
-            } else if (cachedResult.KnownErrorCode == KnownCustomsGstErrorCode.NoResult.ToString()) {
+            }
+            if (cachedResult.KnownErrorCode == KnownCustomsGstErrorCode.NoResult.ToString()) {
                 return new HttpResponseMessage(HttpStatusCode.NonAuthoritativeInformation) {
                     Content = new ObjectContent<IList<IGstLookupResult>>(new IGstLookupResult[0], new JsonMediaTypeFormatter())
                 }.WithCacheTimestamp(cachedResult);
-            } else if (cachedResult.KnownErrorCode == KnownCustomsGstErrorCode.Over100Results.ToString()) {
+            }
+            if (cachedResult.KnownErrorCode == KnownCustomsGstErrorCode.Over100Results.ToString()) {
                 return new HttpResponseMessage(HttpStatusCode.Forbidden) {
                     ReasonPhrase = Resources.WebApiCustomsGstExceptionReasonPhrase,
                     Content = new StringContent(Resources.WebApiOver100Results)
