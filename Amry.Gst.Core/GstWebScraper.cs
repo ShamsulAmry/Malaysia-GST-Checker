@@ -18,13 +18,15 @@ namespace Amry.Gst
     {
         static readonly Uri CustomsEndpoint = new Uri("https://gst.customs.gov.my/TAP/");
 
-        readonly DateTime _startTime = DateTime.Now;
         readonly RestClient _client = new RestClient(CustomsEndpoint) {
             // IMPORTANT: The CookieContainer here will keep track of the latest cookies from the server 
             // and send them back on subsequent requests per RestClient instance.
             CookieContainer = new CookieContainer()
         };
+
         readonly StringBuilder _requestLogBuilder = new StringBuilder();
+        readonly DateTime _startTime = DateTime.Now;
+        readonly string _windowId;
 
         DateTime _lastRequestTime = DateTime.Now;
         int _requestCount;
@@ -34,7 +36,7 @@ namespace Amry.Gst
         int _accessCount;
         GstLookupInputType? _inputType;
         bool _isInitialized;
-        string _token;
+        string _token, _tokenSource;
         bool _daShowResults;
         bool _diNoRegistrantsFound;
         bool _dlOver100Results;
@@ -45,6 +47,20 @@ namespace Amry.Gst
             customsServicePoint.UseNagleAlgorithm = false;
             customsServicePoint.Expect100Continue = false;
             customsServicePoint.ConnectionLimit = 30;
+        }
+
+        public GstWebScraper()
+        {
+            var rnd = new Random();
+            var windowIdBuilder = new StringBuilder(23, 23);
+            windowIdBuilder
+                .Append("FWDC.WND-")
+                .Append(rnd.Next(0xffff).ToString("x4"))
+                .Append('-')
+                .Append(rnd.Next(0xffff).ToString("x4"))
+                .Append('-')
+                .Append(rnd.Next(0xffff).ToString("x4"));
+            _windowId = windowIdBuilder.ToString();
         }
 
         public bool ShouldDispose
@@ -104,7 +120,7 @@ namespace Amry.Gst
 
         async Task InitializeTokenAsync()
         {
-            var req = new RestRequest("GetWlbToken");
+            var req = new RestRequest("_/");
             var resp = await _client.ExecuteGetTaskAsync(req);
             UpdateTokenForNextRequest(resp);
         }
@@ -114,6 +130,17 @@ namespace Amry.Gst
             var req = new RestRequest("_/");
             req.AddParameter("Load", 1);
             req.AddParameter("FAST_VERLAST__", _token);
+
+            var tokenSourceBuilder = new StringBuilder(_tokenSource);
+            tokenSourceBuilder.Insert(_tokenSource.IndexOf('@') - 1, ']');
+            tokenSourceBuilder.Insert(0, "HTML: _ [");
+            req.AddParameter("FAST_VERLAST_SOURCE__", tokenSourceBuilder.ToString());
+
+            req.AddParameter("FAST_CLIENT_WHEN__", GetJavascriptTime());
+            req.AddParameter("FAST_CLIENT_WINDOW__", _windowId);
+            req.AddParameter("FAST_CLIENT_AJAX_ID__", 0);
+            req.AddParameter("_", GetJavascriptTime());
+
             var resp = await _client.ExecuteGetTaskAsync(req);
             UpdateTokenForNextRequest(resp);
         }
@@ -121,9 +148,20 @@ namespace Amry.Gst
         async Task BrowseToLookupPageAsync()
         {
             var req = new RestRequest("_/EventOccurred");
+            req.AddParameter("b-o", "");
+            req.AddParameter("b-q", "");
+            req.AddParameter("b-s", "");
+            req.AddParameter("LASTFOCUSFIELD__", "b-o");
             req.AddParameter("DOC_MODAL_ID__", 0);
             req.AddParameter("EVENT__", "b-i");
+            req.AddParameter("TYPE__", 0);
+            req.AddParameter("CLOSECONFIRMED__", "false");
             req.AddParameter("FAST_VERLAST__", _token);
+            req.AddParameter("FAST_VERLAST_SOURCE__", _tokenSource);
+            req.AddParameter("FAST_CLIENT_WHEN__", GetJavascriptTime());
+            req.AddParameter("FAST_CLIENT_WINDOW__", _windowId);
+            req.AddParameter("FAST_CLIENT_AJAX_ID__", 2);
+
             var resp = await _client.ExecutePostTaskAsync(req);
             UpdateTokenForNextRequest(resp);
         }
@@ -135,19 +173,48 @@ namespace Amry.Gst
             switch (inputType) {
                 case GstLookupInputType.GstNumber:
                     req.AddParameter("d-3", "true");
+                    req.AddParameter("d-5", "");
+                    req.AddParameter("d-6", "false");
+                    req.AddParameter("d-7", "");
+                    req.AddParameter("d-8", "false");
+                    req.AddParameter("d-9", "");
+                    req.AddParameter("LASTFOCUSFIELD__", "d-3");
+                    req.AddParameter("DOC_MODAL_ID__", 0);
+                    req.AddParameter("RECALC_SOURCE__", "d-3");
                     break;
 
                 case GstLookupInputType.BusinessRegNumber:
+                    req.AddParameter("d-3", "false");
+                    req.AddParameter("d-5", "");
                     req.AddParameter("d-6", "true");
+                    req.AddParameter("d-7", "");
+                    req.AddParameter("d-8", "false");
+                    req.AddParameter("d-9", "");
+                    req.AddParameter("LASTFOCUSFIELD__", "d-6");
+                    req.AddParameter("DOC_MODAL_ID__", 0);
+                    req.AddParameter("RECALC_SOURCE__", "d-6");
                     break;
 
                 case GstLookupInputType.BusinessName:
+                    req.AddParameter("d-3", "false");
+                    req.AddParameter("d-5", "");
+                    req.AddParameter("d-6", "false");
+                    req.AddParameter("d-7", "");
                     req.AddParameter("d-8", "true");
+                    req.AddParameter("d-9", "");
+                    req.AddParameter("LASTFOCUSFIELD__", "d-8");
+                    req.AddParameter("DOC_MODAL_ID__", 0);
+                    req.AddParameter("RECALC_SOURCE__", "d-8");
                     break;
             }
 
-            req.AddParameter("DOC_MODAL_ID__", 0);
+            req.AddParameter("RECALC_TRIGGER__", "CheckboxClick");
             req.AddParameter("FAST_VERLAST__", _token);
+            req.AddParameter("FAST_VERLAST_SOURCE__", _tokenSource);
+            req.AddParameter("FAST_CLIENT_WHEN__", GetJavascriptTime());
+            req.AddParameter("FAST_CLIENT_WINDOW__", _windowId);
+            req.AddParameter("FAST_CLIENT_AJAX_ID__", 3);
+
             var resp = await _client.ExecutePostTaskAsync(req);
             UpdateTokenForNextRequest(resp);
             _inputType = inputType;
@@ -159,20 +226,49 @@ namespace Amry.Gst
 
             switch (_inputType) {
                 case GstLookupInputType.GstNumber:
+                    req.AddParameter("d-3", "true");
                     req.AddParameter("d-5", input);
+                    req.AddParameter("d-6", "false");
+                    req.AddParameter("d-7", "");
+                    req.AddParameter("d-8", "false");
+                    req.AddParameter("d-9", "");
+                    req.AddParameter("LASTFOCUSFIELD__", "d-5");
+                    req.AddParameter("DOC_MODAL_ID__", 0);
+                    req.AddParameter("RECALC_SOURCE__", "d-5");
                     break;
 
                 case GstLookupInputType.BusinessRegNumber:
+                    req.AddParameter("d-3", "false");
+                    req.AddParameter("d-5", "");
+                    req.AddParameter("d-6", "true");
                     req.AddParameter("d-7", input);
+                    req.AddParameter("d-8", "false");
+                    req.AddParameter("d-9", "");
+                    req.AddParameter("LASTFOCUSFIELD__", "d-7");
+                    req.AddParameter("DOC_MODAL_ID__", 0);
+                    req.AddParameter("RECALC_SOURCE__", "d-7");
                     break;
 
                 case GstLookupInputType.BusinessName:
+                    req.AddParameter("d-3", "false");
+                    req.AddParameter("d-5", "");
+                    req.AddParameter("d-6", "false");
+                    req.AddParameter("d-7", "");
+                    req.AddParameter("d-8", "true");
                     req.AddParameter("d-9", input);
+                    req.AddParameter("LASTFOCUSFIELD__", "d-9");
+                    req.AddParameter("DOC_MODAL_ID__", 0);
+                    req.AddParameter("RECALC_SOURCE__", "d-9");
                     break;
             }
 
-            req.AddParameter("DOC_MODAL_ID__", 0);
+            req.AddParameter("RECALC_TRIGGER__", "onDocFieldKeyDown:ENTER");
             req.AddParameter("FAST_VERLAST__", _token);
+            req.AddParameter("FAST_VERLAST_SOURCE__", _tokenSource);
+            req.AddParameter("FAST_CLIENT_WHEN__", GetJavascriptTime());
+            req.AddParameter("FAST_CLIENT_WINDOW__", _windowId);
+            req.AddParameter("FAST_CLIENT_AJAX_ID__", 4);
+
             var resp = await _client.ExecutePostTaskAsync(req);
             UpdateTokenForNextRequest(resp);
 
@@ -256,13 +352,23 @@ namespace Amry.Gst
             var tokenHeader = response.Headers.FirstOrDefault(x => x.Name == "Fast-Ver-Last");
             if (tokenHeader == null) {
                 _forceShouldDispose = true;
-                throw new MissingCustomsTokenException(_startTime, _lastRequestTime, 
+                throw new MissingCustomsTokenException(_startTime, _lastRequestTime,
                     _requestCount, _requestLogBuilder.ToString(), response);
             }
 
+            var tokenSourceHeader = response.Headers.First(x => x.Name == "Fast-Ver-Source");
+
             _token = (string) tokenHeader.Value;
+            _tokenSource = (string) tokenSourceHeader.Value;
             _lastRequestTime = DateTime.Now;
             _requestCount++;
+        }
+
+        static long GetJavascriptTime()
+        {
+            return (long) DateTime.UtcNow
+                .Subtract(new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc))
+                .TotalMilliseconds;
         }
     }
 }
