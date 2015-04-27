@@ -161,7 +161,7 @@ namespace Amry.Gst
             req.AddParameter("FAST_VERLAST_SOURCE__", _tokenSource);
             req.AddParameter("FAST_CLIENT_WHEN__", GetJavascriptTime());
             req.AddParameter("FAST_CLIENT_WINDOW__", _windowId);
-            req.AddParameter("FAST_CLIENT_AJAX_ID__", 2);
+            req.AddParameter("FAST_CLIENT_AJAX_ID__", GetAjaxId());
 
             var resp = await _client.ExecutePostTaskAsync(req);
             UpdateTokenForNextRequest(resp);
@@ -214,7 +214,7 @@ namespace Amry.Gst
             req.AddParameter("FAST_VERLAST_SOURCE__", _tokenSource);
             req.AddParameter("FAST_CLIENT_WHEN__", GetJavascriptTime());
             req.AddParameter("FAST_CLIENT_WINDOW__", _windowId);
-            req.AddParameter("FAST_CLIENT_AJAX_ID__", 3);
+            req.AddParameter("FAST_CLIENT_AJAX_ID__", GetAjaxId());
 
             var resp = await _client.ExecutePostTaskAsync(req);
             UpdateTokenForNextRequest(resp);
@@ -268,7 +268,7 @@ namespace Amry.Gst
             req.AddParameter("FAST_VERLAST_SOURCE__", _tokenSource);
             req.AddParameter("FAST_CLIENT_WHEN__", GetJavascriptTime());
             req.AddParameter("FAST_CLIENT_WINDOW__", _windowId);
-            req.AddParameter("FAST_CLIENT_AJAX_ID__", 4);
+            req.AddParameter("FAST_CLIENT_AJAX_ID__", GetAjaxId());
 
             var resp = await _client.ExecutePostTaskAsync(req);
             UpdateTokenForNextRequest(resp);
@@ -371,6 +371,11 @@ namespace Amry.Gst
             _tokenSource = (string) tokenSourceHeader.Value;
             _lastRequestTime = DateTime.Now;
             _requestCount++;
+        }
+
+        string GetAjaxId()
+        {
+            return _token.Substring(0, _token.IndexOf('.'));
         }
 
         static long GetJavascriptTime()
