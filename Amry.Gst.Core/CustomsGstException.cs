@@ -19,6 +19,7 @@ namespace Amry.Gst
     {
         NoResult,
         Over100Results,
-        StatusCode400
+        StatusCode400,
+        ScheduledMaintenance
     }
 }

@@ -40,6 +40,7 @@ namespace Amry.Gst
         bool _daShowResults;
         bool _diNoRegistrantsFound;
         bool _dlOver100Results;
+        bool _dnScheduledMaintenance;
 
         static GstWebScraper()
         {
@@ -300,7 +301,15 @@ namespace Amry.Gst
                     case "d-l":
                         _dlOver100Results = update.Visible ?? false;
                         break;
+
+                    case "d-n":
+                        _dnScheduledMaintenance = update.Visible ?? false;
+                        break;
                 }
+            }
+
+            if (_dnScheduledMaintenance) {
+                throw new CustomsGstException(Resources.ScheduledMaintenanceErrorMessage, KnownCustomsGstErrorCode.ScheduledMaintenance);
             }
 
             if (_dlOver100Results) {
