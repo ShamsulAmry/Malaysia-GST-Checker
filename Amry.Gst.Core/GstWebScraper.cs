@@ -68,7 +68,7 @@ namespace Amry.Gst
         {
             // Tweak parameters here for rules of when to dispose a scraper session.
             // Still trying to figure out what rule does the Customs use to expire their token sessions.
-            get { return _forceShouldDispose || _requestCount >= 100 || (DateTime.Now - _lastRequestTime).TotalMinutes >= 15; }
+            get { return _forceShouldDispose || _requestCount >= 100 || (DateTime.Now - _lastRequestTime).TotalMinutes >= 5; }
         }
 
         public async Task<IList<IGstLookupResult>> LookupGstDataAsync(GstLookupInputType inputType, string input, bool validateInput = false)
