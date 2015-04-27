@@ -87,18 +87,18 @@ namespace Amry.Gst.Web.Models
                 if (ex.KnownErrorCode == KnownCustomsGstErrorCode.Over100Results) {
 #pragma warning disable 4014
                     InsertAsync(CachedGstEntity.CreateForError(
-#pragma warning restore 4014
                         inputType, input, KnownCustomsGstErrorCode.Over100Results));
                 }
+#pragma warning restore 4014
                 throw;
             }
 
             if (lookupResults.Count == 0) {
 #pragma warning disable 4014
                 InsertAndScheduleDeleteAsync(CachedGstEntity.CreateForError(
-#pragma warning restore 4014
                     inputType, input, KnownCustomsGstErrorCode.NoResult), 6);
                 return lookupResults;
+#pragma warning restore 4014
             }
 
             if (lookupResults[0].IsLiveData) {

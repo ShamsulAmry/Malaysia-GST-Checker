@@ -38,6 +38,12 @@ namespace Amry.Gst.Web.Models
                             ReasonPhrase = Resources.WebApiCustomsGstExceptionReasonPhrase,
                             Content = new StringContent(ex.Message)
                         };
+
+                    case KnownCustomsGstErrorCode.ScheduledMaintenance:
+                        return new HttpResponseMessage(HttpStatusCode.ServiceUnavailable) {
+                            ReasonPhrase = Resources.WebApiCustomsGstExceptionReasonPhrase,
+                            Content = new StringContent(ex.Message)
+                        };
                 }
 
                 throw;

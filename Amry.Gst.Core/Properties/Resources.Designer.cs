@@ -115,6 +115,15 @@ namespace Amry.Gst.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to System is undergoing scheduled maintenance, please try again in 15 minutes..
+        /// </summary>
+        internal static string ScheduledMaintenanceErrorMessage {
+            get {
+                return ResourceManager.GetString("ScheduledMaintenanceErrorMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to A single instance of GstWebScraper is not thread-safe and can only do one lookup at a time..
         /// </summary>
         internal static string SingleLookupErrorMessage {
