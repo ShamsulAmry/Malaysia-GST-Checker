@@ -294,15 +294,15 @@ namespace Amry.Gst
                         _daShowResults = update.Visible ?? false;
                         break;
 
-                    case "d-i":
+                    case "d-j":
                         _diNoRegistrantsFound = update.Visible ?? false;
                         break;
 
-                    case "d-l":
+                    case "d-m":
                         _dlOver100Results = update.Visible ?? false;
                         break;
 
-                    case "d-n":
+                    case "d-o":
                         _dnScheduledMaintenance = update.Visible ?? false;
                         break;
                 }
