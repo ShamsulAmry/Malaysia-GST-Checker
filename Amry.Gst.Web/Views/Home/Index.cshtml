@@ -58,7 +58,8 @@
     <thead>
         <tr>
             <th>GST Number</th>
-            <th>Business Name</th>
+            <th>Legal Name</th>
+            <th>Trading Name</th>
             <th>Commence Date</th>
             <th>GST Status</th>
         </tr>
@@ -66,7 +67,8 @@
     <tbody>
         <tr ng-repeat="result in results | orderBy:'BusinessName'">
             <td data-label="GST Number" ng-bind="result.GstNumber"></td>
-            <td data-label="Business Name" ng-bind-html="result.BusinessName"></td>
+            <td data-label="Legal Name" ng-bind-html="result.LegalName"></td>
+            <td data-label="Trading Name" ng-bind-html="result.TradingName"></td>
             <td data-label="Commence Date" ng-bind="result.CommenceDate"></td>
             <td data-label="GST Status" ng-bind="result.Status"></td>
         </tr>

@@ -5,7 +5,8 @@ namespace Amry.Gst
 {
     public interface IGstLookupResult
     {
-        string BusinessName { get; }
+        string LegalName { get; }
+        string TradingName { get; }
         string CommenceDate { get; }
         string GstNumber { get; }
         string Status { get; }
@@ -15,10 +16,11 @@ namespace Amry.Gst
     [DataContract]
     public class GstLookupResult : IGstLookupResult
     {
-        public GstLookupResult(string gstNumber, string businessName, DateTime commenceDate, string status)
+        public GstLookupResult(string gstNumber, string legalName, string tradingName, DateTime commenceDate, string status)
         {
             GstNumber = gstNumber;
-            BusinessName = businessName;
+            LegalName = legalName;
+            TradingName = tradingName;
             CommenceDate = commenceDate.ToString("yyyy-MM-dd");
             Status = status;
             IsLiveData = true;
@@ -28,7 +30,10 @@ namespace Amry.Gst
         public string GstNumber { get; private set; }
 
         [DataMember]
-        public string BusinessName { get; private set; }
+        public string LegalName { get; private set; }
+
+        [DataMember]
+        public string TradingName { get; private set; }
 
         [DataMember]
         public string CommenceDate { get; private set; }

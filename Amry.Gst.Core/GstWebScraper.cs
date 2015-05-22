@@ -324,7 +324,7 @@ namespace Amry.Gst
             // I'm leaving the table checking code below in place, just in case.
             // If there is no previous result returned by the Customs' server 
             // and current result is also empty, they will not return any table output.
-            var resultField = jsonResult.Updates.FieldUpdates.FirstOrDefault(update => update.Field == "d-f");
+            var resultField = jsonResult.Updates.FieldUpdates.FirstOrDefault(update => update.Field == "d-g");
             if (resultField == null) {
                 return new IGstLookupResult[0];
             }
@@ -340,13 +340,14 @@ namespace Amry.Gst
                 .Select(x => x.InnerText)
                 .ToArray();
 
-            return Enumerable.Range(0, cellTexts.Length/4)
-                .Select(i => i*4)
+            return Enumerable.Range(0, cellTexts.Length/5)
+                .Select(i => i*5)
                 .Select(i => new GstLookupResult(
                     cellTexts[i],
                     cellTexts[i + 1],
-                    DateTime.ParseExact(cellTexts[i + 2], "dd-MMM-yyyy", CultureInfo.InvariantCulture),
-                    cellTexts[i + 3]))
+                    cellTexts[i + 2],
+                    DateTime.ParseExact(cellTexts[i + 3], "dd-MMM-yyyy", CultureInfo.InvariantCulture),
+                    cellTexts[i + 4]))
                 .ToArray();
         }
 
