@@ -19,7 +19,10 @@ namespace Amry.Gst.Web.Models
         public string GstNumber { get; set; }
 
         [DataMember]
-        public string BusinessName { get; set; }
+        public string LegalName { get; set; }
+
+        [DataMember]
+        public string TradingName { get; set; }
 
         [DataMember]
         public string CommenceDate { get; set; }
@@ -61,7 +64,8 @@ namespace Amry.Gst.Web.Models
                 PartitionKey = GetPartitionKey(inputType, input),
                 RowKey = sequence.ToString("000"),
                 GstNumber = liveResult.GstNumber,
-                BusinessName = liveResult.BusinessName,
+                LegalName = liveResult.LegalName,
+                TradingName = liveResult.TradingName,
                 CommenceDate = liveResult.CommenceDate,
                 Status = liveResult.Status
             };
