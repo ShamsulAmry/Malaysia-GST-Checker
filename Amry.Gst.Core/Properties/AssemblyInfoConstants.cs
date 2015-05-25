@@ -7,6 +7,6 @@
         public const string Copyright = "Copyright © Shamsul Amry Mokhtar 2015";
 
         // My own version format: yy.M.d.HHmm
-        public const string Version = "15.5.26.0032";
+        public const string Version = "15.5.26.0311";
     }
 }

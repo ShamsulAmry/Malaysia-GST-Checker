@@ -6,9 +6,10 @@ namespace Amry.Gst.Web.Controllers
 {
     public class HomeController : Controller
     {
+        const int OneWeek = 604800;
         const int OneYear = 31536000;
 
-        [Route, MinifyHtml]
+        [Route, MinifyHtml, OutputCache(Duration = OneWeek)]
         public ActionResult Index()
         {
             return View();
@@ -29,7 +30,7 @@ namespace Amry.Gst.Web.Controllers
         [Route("ver")]
         public ActionResult Version()
         {
-            return Content("Version: " + AssemblyInfoConstants.Version, "text/plain");
+            return Content(AssemblyInfoConstants.Version, "text/plain");
         }
     }
 }
