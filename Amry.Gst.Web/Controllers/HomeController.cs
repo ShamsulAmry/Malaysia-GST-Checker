@@ -6,19 +6,21 @@ namespace Amry.Gst.Web.Controllers
 {
     public class HomeController : Controller
     {
+        const int OneYear = 31536000;
+
         [Route, MinifyHtml]
         public ActionResult Index()
         {
             return View();
         }
 
-        [Route("about"), MinifyHtml]
+        [Route("about"), MinifyHtml, OutputCache(Duration = OneYear)]
         public ActionResult About()
         {
             return View();
         }
 
-        [Route("api"), MinifyHtml]
+        [Route("api"), MinifyHtml, OutputCache(Duration = OneYear)]
         public ActionResult Api()
         {
             return View();
