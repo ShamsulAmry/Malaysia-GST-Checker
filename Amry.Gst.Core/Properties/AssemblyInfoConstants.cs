@@ -6,7 +6,7 @@
         public const string Product = "Amry's Malaysia GST Checker";
         public const string Copyright = "Copyright © Shamsul Amry Mokhtar 2015";
 
-        // My own version format: yy.M.d.Hmm
-        public const string Version = "15.5.25.2050";
+        // My own version format: yy.M.d.HHmm
+        public const string Version = "15.5.26.0007";
     }
 }
