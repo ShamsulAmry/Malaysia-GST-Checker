@@ -29,7 +29,7 @@ namespace Amry.Gst.Web.Controllers
         [Route("ver")]
         public ActionResult Version()
         {
-            return Content(AssemblyInfoConstants.Version, "text/plain");
+            return Content("Version: " + AssemblyInfoConstants.Version, "text/plain");
         }
     }
 }
